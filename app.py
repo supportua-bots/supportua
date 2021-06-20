@@ -1,6 +1,6 @@
 from flask import Flask, request, Response, json, jsonify
 from multiprocessing import Process
-from telegrambot import main as tgbot
+# from telegrambot import main as tgbot
 from jivochat import main as jivo
 from vibertelebot import main as vbbot
 
@@ -8,18 +8,18 @@ from vibertelebot import main as vbbot
 app = Flask(__name__)
 
 
-@app.route('/jivochatgram', methods=['GET', 'POST'])
-def jivochat_endpoint_telegram():
-    source = 'telegram'
-    data = request.get_json()
-    print(data)
-    returned_data = jivo.main(data, source)
-    response = app.response_class(
-        response=json.dumps(returned_data),
-        status=200,
-        mimetype='application/json'
-    )
-    return response
+# @app.route('/jivochatgram', methods=['GET', 'POST'])
+# def jivochat_endpoint_telegram():
+#     source = 'telegram'
+#     data = request.get_json()
+#     print(data)
+#     returned_data = jivo.main(data, source)
+#     response = app.response_class(
+#         response=json.dumps(returned_data),
+#         status=200,
+#         mimetype='application/json'
+#     )
+#     return response
 
 
 @app.route('/jivochatviber', methods=['GET', 'POST'])
@@ -48,13 +48,11 @@ def server_launch():
 
 
 if __name__ == '__main__':
-    # flask_server = Process(target=server_launch).start()
-    # telegram_bot = Process(target=tgbot.main).start()
     try:
         flask_server = Process(target=server_launch).start()
-        telegram_bot = Process(target=tgbot.main).start()
+        # telegram_bot = Process(target=tgbot.main).start()
     except KeyboardInterrupt:
         flask_server.terminate()
-        telegram_bot.terminate()
+        # telegram_bot.terminate()
         flask_server.join()
-        telegram_bot.join()
+        # telegram_bot.join()

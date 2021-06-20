@@ -15,7 +15,7 @@ def keyboard_consctructor(items: list) -> dict:
     if len(items) > 12:
         width = 1
     elif len(items) == 3:
-        width = 2
+        width = 6
     elif len(items) > 1:
         width = 3
     else:

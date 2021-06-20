@@ -1,6 +1,8 @@
 import os
 import logging
+import json
 import requests
+from vibertelebot.utils import additional_keyboard as addkb
 from pathlib import Path
 from dotenv import load_dotenv
 from viberbot import Api
@@ -21,7 +23,7 @@ dotenv_path = os.path.join(Path(__file__).parent.parent, 'config/.env')
 load_dotenv(dotenv_path)
 
 viber = Api(BotConfiguration(
-    name='candyua',
+    name='SupportUA',
     avatar=kb.LOGO,
     auth_token=os.getenv('VIBER_TOKEN')
 ))
@@ -49,10 +51,13 @@ def main(request):
         logger.warn("client failed receiving message. failure: {viber_request}")
     elif isinstance(viber_request, ViberConversationStartedRequest):
         # First touch, sending to user keyboard with phone sharing button
-        reply_keyboard = kb.menu_keyboard
+        tracking_data = {'NAME': 'ViberUser', 'HISTORY': '', 'CHAT_MODE': 'off', 'STAGE': 'phone', 'DEALS': []}
+        tracking_data = json.dumps(tracking_data)
         viber.send_messages(viber_request.user.id, [
             TextMessage(
                 text=resources.greeting_message,
-                keyboard=reply_keyboard)
+                keyboard=addkb.SHARE_PHONE_KEYBOARD,
+                tracking_data=tracking_data,
+                min_api_version=6)
             ]
         )
