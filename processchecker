@@ -1,0 +1,19 @@
+#!/bin/bash
+
+MYPROG="gunicorn"
+PGREP="/usr/bin/pgrep"
+$PGREP ${MYPROG}
+if [ $? -ne 0 ]
+then
+    source "/var/www/chatboto/supportua/env/bin/activate"
+    /var/www/chatboto/supportua/env/bin/gunicorn --daemon --bind 0.0.0.0:80$
+fi
+TELE="python3"
+PGREP="/usr/bin/pgrep"
+$PGREP ${TELE}
+# if [ $? -ne 0 ]
+# then
+#     source "/var/www/chatboto/supportua/env/bin/activate"
+#     python3 /var/www/chatboto/supportua/tglaunch.py
+#     echo "Vualia"
+# fi
