@@ -6,7 +6,8 @@ from pathlib import Path
 from dotenv import load_dotenv
 from urllib.parse import urlencode
 from datetime import datetime, date, timedelta
-from bitrix.admin import OWNER_ID, SECTION_ID
+# from bitrix.admin import OWNER_ID, SECTION_ID
+from admin import OWNER_ID, SECTION_ID
 from loguru import logger
 
 
@@ -133,12 +134,13 @@ def get_deal_by_id(id):
     fields = {'id': id}
     url = MAIN_URL + urlencode(fields, doseq=True)
     x = requests.get(url)
+    print(x.json()['result'])
     print(x.json()['result']['UF_CRM_DEAL_LIQPAY'])
+    print(x.json()['result']['UF_CRM_MPI__PAYMENT_STATE'])
 
 
 if __name__ == '__main__':
-    id = find_contact_by_phone('380679374844')
-    print(find_deal_by_contact(id))
+    get_deal_by_id('21525')
 #     MAIN_URL = 'https://supportua.bitrix24.ua/rest/2067/qfhlg4mpu5jyz7kn/entity.item.add.json'
 #     with open("photo2870.jpg", "rb") as image_file:
 #         encoded_string = base64.b64encode(image_file.read())
