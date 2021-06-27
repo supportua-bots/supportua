@@ -6,7 +6,7 @@ $PGREP ${MYPROG}
 if [ $? -ne 0 ]
 then
     source "/var/www/chatboto/.pyenv/versions/3.8.5/envs/env/bin/activate"
-    /var/www/chatboto/.pyenv/versions/3.8.5/envs/env/bin/gunicorn --daemon --bind 0.0.0.0:80$
+    /var/www/chatboto/.pyenv/versions/3.8.5/envs/env/bin/gunicorn --daemon --bind 0.0.0.0:8000 app:app
 fi
 TELE="python3"
 PGREP="/usr/bin/pgrep"
