@@ -84,9 +84,9 @@ def user_message_handler(viber, viber_request):
             tracking_data['PHONE'] = message.contact.phone_number
             reply = [TextMessage(text=resources.please_wait)]
             viber.send_messages(chat_id, reply)
-            id = find_contact_by_phone(message.contact.phone_number)
-            if id:
-                deals = find_deal_by_contact(id)
+            deal_id = find_contact_by_phone(message.contact.phone_number)
+            if deal_id:
+                deals = find_deal_by_contact(deal_id)
                 print(deals)
                 tracking_data['DEALS'] = deals
                 if len(deals) == 0 or len(deals) > 1:
