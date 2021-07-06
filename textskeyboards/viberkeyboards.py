@@ -35,6 +35,11 @@ return_keyboard = keyboard_consctructor([
             ('Меню', 'menu', '')
             ])
 
+pay_keyboard = keyboard_consctructor([
+            ("Зв'язок з оператором", 'operator', ''),
+            ('Я оплатив', 'paid', '')
+            ])
+
 phone_keyboard = [
             ("Зв'язок з оператором", 'operator', ''),
             ('Подiлитись номером', 'phone_reply', '')

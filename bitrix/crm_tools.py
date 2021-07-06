@@ -70,6 +70,7 @@ def upload_image(path):
     return r.json()['data']['url']
 
 
+@logger.catch
 def find_deal_by_contact(id):
     if id is not None:
         MAIN_URL = 'https://supportua.bitrix24.ua/rest/2067/4g3l60we6z7cltoj/crm.deal.list.json?'
@@ -87,10 +88,12 @@ def find_deal_by_contact(id):
     return []
 
 
-def find_contact_by_phone(phone):
+@logger.catch
+def find_contact_by_phone():
     MAIN_URL = f'https://supportua.bitrix24.ua/rest/2067/dubn2ikjcpwxsh79/crm.contact.list.json?'
     next = 0
-    while next != 1234567:
+    result = []
+    while next != 123456789:
         fields = {'select[]': 'ID',
                   'select[]': 'PHONE',
                   'start': next}
@@ -99,21 +102,18 @@ def find_contact_by_phone(phone):
         if 'next' in x.json():
             next = int(x.json()['next'])
         else:
-            next = 1234567
-        try:
+            next = 123456789
+        if 'result' in x.json():
             for item in x.json()['result']:
-                # print(item['ID'])
                 if 'PHONE' in item:
                     cleaned_phone = item['PHONE'][0]['VALUE'].replace('-', '').replace('+', '').replace(' ', '')
                     if cleaned_phone[0] == '0':
                         cleaned_phone = '38' + cleaned_phone
-                    if phone == cleaned_phone:
-                        return item['ID']
-        except:
-            pass
-    return ''
+                    result.append([cleaned_phone, item['ID']])
+    return result
 
 
+@logger.catch
 def find_deal_by_title(title):
     MAIN_URL = 'https://supportua.bitrix24.ua/rest/2067/4g3l60we6z7cltoj/crm.deal.list.json?'
     fields = {'filter[CATEGORY_ID]': 0,
@@ -129,18 +129,35 @@ def find_deal_by_title(title):
     return ids
 
 
+@logger.catch
 def get_deal_by_id(id):
     MAIN_URL = 'https://supportua.bitrix24.ua/rest/2067/1syhxe0qhy432py0/crm.deal.get.json?'
     fields = {'id': id}
     url = MAIN_URL + urlencode(fields, doseq=True)
     x = requests.get(url)
-    print(x.json()['result'])
-    print(x.json()['result']['UF_CRM_DEAL_LIQPAY'])
-    print(x.json()['result']['UF_CRM_MPI__PAYMENT_STATE'])
+    result = ''
+    if 'result' in x.json():
+        result = x.json()['result']['UF_CRM_MPI__PAYMENT_STATE']
+    return result
+
+
+@logger.catch
+def get_link_by_id(id):
+    MAIN_URL = 'https://supportua.bitrix24.ua/rest/2067/1syhxe0qhy432py0/crm.deal.get.json?'
+    fields = {'id': id}
+    url = MAIN_URL + urlencode(fields, doseq=True)
+    x = requests.get(url)
+    result = ''
+    if 'result' in x.json():
+        result = x.json()['result']['UF_CRM_DEAL_LIQPAY']
+    return result
+
 
 
 if __name__ == '__main__':
-    get_deal_by_id('21525')
+    # get_deal_by_id('21525')
+    deals_id = find_contact_by_phone('380982676660')
+    print(deals_id)
 #     MAIN_URL = 'https://supportua.bitrix24.ua/rest/2067/qfhlg4mpu5jyz7kn/entity.item.add.json'
 #     with open("photo2870.jpg", "rb") as image_file:
 #         encoded_string = base64.b64encode(image_file.read())
