@@ -2,7 +2,7 @@
 
 python3 /var/www/chatboto/supportua/populator.py
 python3 /var/www/chatboto/supportua/tasks.py
-MYPROG="gunicorn"
+MYPROG="mpbot"
 PGREP="/usr/bin/pgrep"
 $PGREP ${MYPROG}
 if [ $? -ne 0 ]
@@ -10,9 +10,7 @@ then
     source "/var/www/chatboto/.pyenv/versions/3.8.5/envs/env/bin/activate"
     exec -a mpbot /var/www/chatboto/.pyenv/versions/3.8.5/envs/env/bin/gunicorn --daemon --bind 0.0.0.0:8000 app:app &
 fi
-TELE="python3"
-PGREP="/usr/bin/pgrep"
-$PGREP ${TELE}
+
 # if [ $? -ne 0 ]
 # then
 #     source "/var/www/chatboto/supportua/env/bin/activate"

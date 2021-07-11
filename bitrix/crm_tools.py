@@ -87,29 +87,29 @@ def find_deal_by_contact(id):
     return []
 
 
-# @logger.catch
-# def find_contact_by_phone():
-#     MAIN_URL = f'https://supportua.bitrix24.ua/rest/2067/dubn2ikjcpwxsh79/crm.contact.list.json?'
-#     next = 0
-#     result = []
-#     while next != 123456789:
-#         fields = {'select[]': 'ID',
-#                   'select[]': 'PHONE',
-#                   'start': next}
-#         url = MAIN_URL + urlencode(fields, doseq=True)
-#         x = requests.get(url)
-#         if 'next' in x.json():
-#             next = int(x.json()['next'])
-#         else:
-#             next = 123456789
-#         if 'result' in x.json():
-#             for item in x.json()['result']:
-#                 if 'PHONE' in item:
-#                     cleaned_phone = item['PHONE'][0]['VALUE'].replace('-', '').replace('+', '').replace(' ', '')
-#                     if cleaned_phone[0] == '0':
-#                         cleaned_phone = '38' + cleaned_phone
-#                     result.append([cleaned_phone, item['ID']])
-#     return result
+@logger.catch
+def find_contact_by_phone():
+    MAIN_URL = f'https://supportua.bitrix24.ua/rest/2067/dubn2ikjcpwxsh79/crm.contact.list.json?'
+    next = 0
+    result = []
+    while next != 123456789:
+        fields = {'select[]': 'ID',
+                  'select[]': 'PHONE',
+                  'start': next}
+        url = MAIN_URL + urlencode(fields, doseq=True)
+        x = requests.get(url)
+        if 'next' in x.json():
+            next = int(x.json()['next'])
+        else:
+            next = 123456789
+        if 'result' in x.json():
+            for item in x.json()['result']:
+                if 'PHONE' in item:
+                    cleaned_phone = item['PHONE'][0]['VALUE'].replace('-', '').replace('+', '').replace(' ', '')
+                    if cleaned_phone[0] == '0':
+                        cleaned_phone = '38' + cleaned_phone
+                    result.append([cleaned_phone, item['ID']])
+    return result
 
 
 @logger.catch
