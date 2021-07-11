@@ -1,5 +1,5 @@
 import json
-from db_func.database import get_all_tasks
+from db_func.database import get_all_tasks, delete_task
 from bitrix.crm_tools import get_deal_by_id
 from viberbot.api.messages.text_message import TextMessage
 from vibertelebot.main import viber
@@ -39,6 +39,7 @@ def check_payment_status():
                                  tracking_data=tracking_data,
                                  min_api_version=6)]
             viber.send_messages(task[0], reply)
+            delete_task(task[0])
 
 
 if __name__ == '__main__':

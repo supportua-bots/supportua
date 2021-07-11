@@ -21,7 +21,7 @@ from jivochat import sender as jivochat
 from jivochat.utils import resources as jivosource
 from bitrix.crm_tools import (find_deal_by_contact,
                             find_deal_by_title, upload_image, get_deal_by_id, get_link_by_id)
-from db_func.database import check_phone, add_task
+from db_func.database import check_phone, add_task, task_active
 from textskeyboards import viberkeyboards as kb
 from scraper.headlines import get_product_title
 from loguru import logger
@@ -232,26 +232,31 @@ def user_message_handler(viber, viber_request):
                 reply_text = resources.payment_message
                 add_task(chat_id, tracking_data['DEAL'][0][0], tracking_data['DEAL'][0][1], tracking_data['PHONE'])
             elif text == 'register':
-                reply_keyboard = kb.menu_keyboard
-                reply_text = resources.menu_message
-                if 'DEAL' in tracking_data and len(tracking_data['DEAL']) > 0:
-                    status = str(get_deal_by_id(tracking_data['DEAL'][0][0]))
-                    logger.info(status)
-                    if status == '209':
-                        reply_keyboard = kb.operator_keyboard
-                        reply_text = resources.rozetka_link
-                        tracking_data['STAGE'] = 'rozetka'
-                    else:
-                        pay_link = get_link_by_id(tracking_data['DEAL'][0][0])
-                        if pay_link:
-                            reply_keyboard = kb.pay_keyboard
-                            reply_text = resources.link_message.replace('[string]', pay_link)
-                        else:
-                            reply_keyboard = kb.operator_keyboard
-                            reply_text = resources.deal_error
+                if task_active():
+                    answer = [TextMessage(text=resources.payment_message)]
+                    viber.send_messages(chat_id, answer)
+                    reply_keyboard = kb.menu_keyboard
+                    reply_text = resources.menu_message
+                    time.sleep(1)
                 else:
-                    reply_keyboard = kb.operator_keyboard
-                    reply_text = resources.deal_error
+                    if 'DEAL' in tracking_data and len(tracking_data['DEAL']) > 0:
+                        status = str(get_deal_by_id(tracking_data['DEAL'][0][0]))
+                        logger.info(status)
+                        if status == '209':
+                            reply_keyboard = kb.operator_keyboard
+                            reply_text = resources.rozetka_link
+                            tracking_data['STAGE'] = 'rozetka'
+                        else:
+                            pay_link = get_link_by_id(tracking_data['DEAL'][0][0])
+                            if pay_link:
+                                reply_keyboard = kb.pay_keyboard
+                                reply_text = resources.link_message.replace('[string]', pay_link)
+                            else:
+                                reply_keyboard = kb.operator_keyboard
+                                reply_text = resources.deal_error
+                    else:
+                        reply_keyboard = kb.operator_keyboard
+                        reply_text = resources.deal_error
             elif text == 'continue':
                 reply_keyboard = kb.operator_keyboard
                 reply_text = resources.name_message

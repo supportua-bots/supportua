@@ -29,7 +29,7 @@ def create_table():
                         chat_id TEXT);'''
     post_sql_query(query)
     query = '''CREATE TABLE IF NOT EXISTS TASKS
-                        (user_id TEXT,
+                        (user_id TEXT UNIQUE,
                         deal_id TEXT,
                         deal_title TEXT,
                         phone TEXT);'''
@@ -57,12 +57,29 @@ def check_phone(phone):
 
 
 def add_task(user_id, deal_id, deal_title, phone):
-    query = f"INSERT INTO TASKS (user_id, deal_id, deal_title, phone) VALUES ('{user_id}', "\
-            f"'{deal_id}', '{deal_title}', '{phone}');"
-    post_sql_query(query)
+    sql_selection = f"SELECT * FROM TASKS WHERE "\
+                        f"user_id = '{user_id}';"
+    rows = post_sql_query(sql_selection)
+    if not rows:
+        query = f"INSERT INTO TASKS (user_id, deal_id, deal_title, phone) VALUES ('{user_id}', "\
+                f"'{deal_id}', '{deal_title}', '{phone}');"
+        post_sql_query(query)
 
 
 def get_all_tasks():
     query = f"SELECT * FROM TASKS;"
     tasks = post_sql_query(query)
     return tasks
+
+
+def task_active(user_id):
+    sql_selection = f"SELECT * FROM TASKS WHERE "\
+                        f"user_id = '{user_id}';"
+    post_sql_query(sql_selection)
+    return bool(post_sql_query(sql_selection))
+
+
+def delete_task(user_id):
+    sql_selection = f"DELETE FROM TASKS WHERE "\
+                        f"user_id = '{user_id}';"
+    post_sql_query(sql_selection)
