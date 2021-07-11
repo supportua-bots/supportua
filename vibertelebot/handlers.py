@@ -228,9 +228,11 @@ def user_message_handler(viber, viber_request):
                 reply_keyboard = kb.confirmation_keyboard
                 reply_text = resources.repair_message
             elif text == 'paid':
-                reply_keyboard = kb.operator_keyboard
-                reply_text = resources.payment_message
                 add_task(chat_id, tracking_data['DEAL'][0][0], tracking_data['DEAL'][0][1], tracking_data['PHONE'])
+                answer = [TextMessage(text=resources.payment_message)]
+                viber.send_messages(chat_id, answer)
+                reply_keyboard = kb.menu_keyboard
+                reply_text = resources.menu_message
             elif text == 'register':
                 if task_active(chat_id):
                     answer = [TextMessage(text=resources.payment_message)]
