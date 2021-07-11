@@ -122,7 +122,7 @@ def find_deal_by_title(title):
     ids = []
     try:
         for item in x.json()['result']:
-            ids.append([item['ID'], item['TITLE']])
+            ids.append(item['ID'])
     except:
         pass
     return ids

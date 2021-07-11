@@ -68,7 +68,7 @@ def add_user(phone, chat_id, deal, name):
 def input_new_users(users):
     unique_objects = []
     for user in users:
-        logger.info(user)
+        # logger.info(user)
         sql_selection = f"SELECT * FROM DATA WHERE "\
                             f"phone = '{user[0]}';"
         rows = post_sql_query(sql_selection)
