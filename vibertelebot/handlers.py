@@ -24,6 +24,7 @@ from bitrix.crm_tools import (find_deal_by_contact,
 from db_func.database import check_phone, add_task
 from textskeyboards import viberkeyboards as kb
 from scraper.headlines import get_product_title
+from loguru import logger
 
 
 
@@ -31,13 +32,23 @@ dotenv_path = os.path.join(Path(__file__).parent.parent, 'config/.env')
 load_dotenv(dotenv_path)
 
 
+logger.add(
+    "logs/info.log",
+    format="{time} {level} {message}",
+    level="DEBUG",
+    rotation="100 MB",
+    compression="zip",
+)
+
+
+@logger.catch
 def deals_grabber(phone, chat_id, tracking_data, viber):
     contact_id = check_phone(phone)
     if contact_id:
-        print('Found contact_id')
-        print(contact_id)
+        logger.info('Found contact_id')
+        logger.info(contact_id)
         deals = find_deal_by_contact(contact_id[0][0])
-        print(deals)
+        logger.info(deals)
         tracking_data['DEALS'] = deals
         if len(deals) == 0 or len(deals) > 1:
             reply_keyboard = kb.operator_keyboard
@@ -48,11 +59,11 @@ def deals_grabber(phone, chat_id, tracking_data, viber):
             reply_text = resources.menu_message
             tracking_data['DEAL'] = deals[0]
     else:
-        print('Not found contact_id')
+        logger.info('Not found contact_id')
         reply_keyboard = addkb.SHARE_PHONE_KEYBOARD
         reply_text = resources.phone_error
         tracking_data['STAGE'] = 'phone'
-        print(tracking_data)
+        logger.info(tracking_data)
     tracking_data = json.dumps(tracking_data)
     reply = [TextMessage(text=reply_text,
                          keyboard=reply_keyboard,
@@ -61,6 +72,7 @@ def deals_grabber(phone, chat_id, tracking_data, viber):
     viber.send_messages(chat_id, reply)
 
 
+@logger.catch
 def operator_connection(chat_id, tracking_data):
     with open(f'media/{chat_id}/history.txt', 'r') as f:
         history = f.read()
@@ -77,7 +89,7 @@ def operator_connection(chat_id, tracking_data):
                 name = link.split('/')[-1]
                 jivochat.send_photo(chat_id, tracking_data['NAME'], link, name, 'viber')
     except IOError:
-        print("File not accessible")
+        logger.info("File not accessible")
     all_filenames = [i for i in glob.glob(f'media/{chat_id}/*.jpg')]
     for i in all_filenames:
         f = open(i ,'rb')
@@ -89,6 +101,7 @@ def operator_connection(chat_id, tracking_data):
         pass
 
 
+@logger.catch
 def user_message_handler(viber, viber_request):
     """Receiving a message from user and sending replies."""
     logger.info(viber_request)
@@ -216,7 +229,7 @@ def user_message_handler(viber, viber_request):
                 reply_text = resources.menu_message
                 if 'DEAL' in tracking_data and len(tracking_data['DEAL']) > 0:
                     status = str(get_deal_by_id(tracking_data['DEAL'][0][0]))
-                    print(status)
+                    logger.info(status)
                     if status == '209':
                         reply_keyboard = kb.operator_keyboard
                         reply_text = resources.rozetka_link
@@ -255,10 +268,10 @@ def user_message_handler(viber, viber_request):
                             tracking_data['PHONE'] = text
                             contact_id = check_phone(text)
                             if contact_id:
-                                print('Found contact_id')
-                                print(contact_id)
+                                logger.info('Found contact_id')
+                                logger.info(contact_id)
                                 deals = find_deal_by_contact(contact_id[0][1])
-                                print(deals)
+                                logger.info(deals)
                                 tracking_data['DEALS'] = deals
                                 if len(deals) == 0 or len(deals) > 1:
                                     reply_keyboard = kb.operator_keyboard
@@ -269,11 +282,11 @@ def user_message_handler(viber, viber_request):
                                     reply_text = resources.menu_message
                                     tracking_data['DEAL'] = deals[0]
                             else:
-                                print('Not found contact_id')
+                                logger.info('Not found contact_id')
                                 reply_keyboard = addkb.SHARE_PHONE_KEYBOARD
                                 reply_text = resources.phone_error
                                 tracking_data['STAGE'] = 'phone'
-                                print(tracking_data)
+                                logger.info(tracking_data)
                     else:
                         reply_keyboard = addkb.SHARE_PHONE_KEYBOARD
                         reply_text = resources.phone_error
@@ -366,7 +379,7 @@ def user_message_handler(viber, viber_request):
                         try:
                             title = str(get_product_title(text)) + '\n'
                         except Exception as e:
-                            print(e)
+                            logger.info(e)
                     reply_keyboard = kb.operator_keyboard
                     reply_text = title + resources.wait_for_operator
                 else:

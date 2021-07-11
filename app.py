@@ -4,6 +4,16 @@ from multiprocessing import Process
 from jivochat import main as jivo
 from vibertelebot import main as vbbot
 from db_func.database import create_table
+from loguru import logger
+
+
+logger.add(
+    "logs/info.log",
+    format="{time} {level} {message}",
+    level="DEBUG",
+    rotation="100 MB",
+    compression="zip",
+)
 
 app = Flask(__name__)
 
@@ -12,7 +22,7 @@ app = Flask(__name__)
 # def jivochat_endpoint_telegram():
 #     source = 'telegram'
 #     data = request.get_json()
-#     print(data)
+#     logger.info(data)
 #     returned_data = jivo.main(data, source)
 #     response = app.response_class(
 #         response=json.dumps(returned_data),
@@ -26,7 +36,7 @@ app = Flask(__name__)
 def jivochat_endpoint_viber():
     source = 'viber'
     data = request.get_json()
-    print(data)
+    logger.info(data)
     returned_data = jivo.main(data, source)
     response = app.response_class(
         response=json.dumps(returned_data),

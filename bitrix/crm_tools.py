@@ -79,7 +79,7 @@ def find_deal_by_contact(id):
         url = MAIN_URL + urlencode(fields, doseq=True)
         x = requests.get(url)
         ids = []
-        print(x.json())
+        logger.info(x.json())
         if 'result' in x.json():
             for item in x.json()['result']:
                 ids.append([item['ID'], item['TITLE']])
@@ -153,10 +153,10 @@ def get_link_by_id(id):
 
 
 
-if __name__ == '__main__':
+# if __name__ == '__main__':
     # get_deal_by_id('21525')
-    deals_id = find_contact_by_phone('380982676660')
-    print(deals_id)
+    # deals_id = find_contact_by_phone('380982676660')
+    # logger.info(deals_id)
 #     MAIN_URL = 'https://supportua.bitrix24.ua/rest/2067/qfhlg4mpu5jyz7kn/entity.item.add.json'
 #     with open("photo2870.jpg", "rb") as image_file:
 #         encoded_string = base64.b64encode(image_file.read())
@@ -167,6 +167,6 @@ if __name__ == '__main__':
 #                 'DETAIL_PICTURE[0]':'test.jpg',
 #                 'DETAIL_PICTURE[1]':encoded_string}
 #         url = urlencode(data, doseq=True)
-#         print(url)
+#         logger.info(url)
 #         x = requests.post(MAIN_URL, headers=header, json=url)
-#         print(x.json())
+#         logger.info(x.json())
