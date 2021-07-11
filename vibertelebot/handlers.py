@@ -232,7 +232,7 @@ def user_message_handler(viber, viber_request):
                 reply_text = resources.payment_message
                 add_task(chat_id, tracking_data['DEAL'][0][0], tracking_data['DEAL'][0][1], tracking_data['PHONE'])
             elif text == 'register':
-                if task_active():
+                if task_active(chat_id):
                     answer = [TextMessage(text=resources.payment_message)]
                     viber.send_messages(chat_id, answer)
                     reply_keyboard = kb.menu_keyboard
