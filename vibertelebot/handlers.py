@@ -122,7 +122,7 @@ def user_message_handler(viber, viber_request):
 
     if isinstance(message, ContactMessage):
         # Handling reply after user shared his contact infromation
-        logger.info(message.contact.name)
+        logger.info(type(message.contact.name))
         if message.contact.name:
             tracking_data['NAME'] = message.contact.name
         if 'PHONE' in tracking_data:
