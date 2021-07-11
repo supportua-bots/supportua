@@ -45,10 +45,9 @@ logger.add(
 def deals_grabber(phone, chat_id, tracking_data, viber):
     contact_id = check_phone(phone)
     if contact_id:
-        logger.info('Found contact_id')
         logger.info(contact_id)
         deals = find_deal_by_contact(contact_id[0][0])
-        logger.info(deals)
+        logger.info(f'Deals: {deals}')
         if len(deals) == 0 or len(deals) > 1:
             reply_keyboard = kb.operator_keyboard
             reply_text = resources.specify_deal_id
@@ -58,7 +57,6 @@ def deals_grabber(phone, chat_id, tracking_data, viber):
             reply_text = resources.menu_message
             tracking_data['DEAL'] = deals[0]
     else:
-        logger.info('Not found contact_id')
         reply_keyboard = addkb.SHARE_PHONE_KEYBOARD
         reply_text = resources.phone_error
         tracking_data['STAGE'] = 'phone'
@@ -122,7 +120,6 @@ def user_message_handler(viber, viber_request):
 
     if isinstance(message, ContactMessage):
         # Handling reply after user shared his contact infromation
-        logger.info(type(message.contact.name))
         if message.contact.name:
             tracking_data['NAME'] = message.contact.name
         if 'PHONE' in tracking_data:
@@ -285,10 +282,9 @@ def user_message_handler(viber, viber_request):
                             tracking_data['PHONE'] = text
                             contact_id = check_phone(text)
                             if contact_id:
-                                logger.info('Found contact_id')
                                 logger.info(contact_id)
                                 deals = find_deal_by_contact(contact_id[0][1])
-                                logger.info(deals)
+                                logger.info(f'Deals: {deals}')
                                 if len(deals) == 0 or len(deals) > 1:
                                     reply_keyboard = kb.operator_keyboard
                                     reply_text = resources.specify_deal_id
@@ -298,7 +294,6 @@ def user_message_handler(viber, viber_request):
                                     reply_text = resources.menu_message
                                     tracking_data['DEAL'] = deals[0]
                             else:
-                                logger.info('Not found contact_id')
                                 reply_keyboard = addkb.SHARE_PHONE_KEYBOARD
                                 reply_text = resources.phone_error
                                 tracking_data['STAGE'] = 'phone'
