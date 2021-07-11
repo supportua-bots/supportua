@@ -11,8 +11,8 @@ dotenv_path = os.path.join(Path(__file__).parent.parent.parent, 'config/.env')
 load_dotenv(dotenv_path)
 
 # Loading Environment variables
-URL = os.getenv("URL_HOOK")
-# URL = 'https://chatbot.mp.support.ua'
+# URL = os.getenv("URL_HOOK")
+URL = 'https://chatbot.mp.support.ua'
 
 logger = logging.getLogger()
 logger.setLevel('DEBUG')
