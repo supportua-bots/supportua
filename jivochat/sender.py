@@ -28,7 +28,7 @@ def send_message(user_id, name, text, source):
     input = {
         "sender" :
             {
-            "id": str(user_id)[:-2],
+            "id": str(user_id),
             "name": f'{name} [{user_id}]',
             },
             "message":
