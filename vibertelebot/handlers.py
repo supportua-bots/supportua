@@ -19,9 +19,9 @@ from viberbot.api.messages.rich_media_message import RichMediaMessage
 from viberbot.api.messages.picture_message import PictureMessage
 from jivochat import sender as jivochat
 from jivochat.utils import resources as jivosource
-from bitrix.crm_tools import (find_contact_by_phone, find_deal_by_contact,
+from bitrix.crm_tools import (find_deal_by_contact,
                             find_deal_by_title, upload_image, get_deal_by_id, get_link_by_id)
-from db_func.database import check_phone
+from db_func.database import check_phone, add_task
 from textskeyboards import viberkeyboards as kb
 from scraper.headlines import get_product_title
 
@@ -36,7 +36,7 @@ def deals_grabber(phone, chat_id, tracking_data, viber):
     if contact_id:
         print('Found contact_id')
         print(contact_id)
-        deals = find_deal_by_contact(contact_id[0][1])
+        deals = find_deal_by_contact(contact_id[0][0])
         print(deals)
         tracking_data['DEALS'] = deals
         if len(deals) == 0 or len(deals) > 1:
@@ -102,7 +102,7 @@ def user_message_handler(viber, viber_request):
     reply_alt_text = ''
     reply_rich_media = {}
     tracking_data = json.loads(tracking_data)
-    data_keys = {'NAME': 'ViberUser', 'HISTORY': '', 'CHAT_MODE': 'off', 'STAGE': 'menu'}
+    data_keys = {'NAME': 'ViberUser', 'HISTORY': '', 'CHAT_MODE': 'off', 'STAGE': 'menu', 'PHOTO_MODE': 'off'}
     for k in data_keys:
         if k not in tracking_data:
             tracking_data[k] = data_keys[k]
@@ -131,22 +131,27 @@ def user_message_handler(viber, viber_request):
             reply_keyboard = kb.photo_keyboard
             reply_text = resources.photo_choice_message
             tracking_data['STAGE'] = ''
+            tracking_data['PHOTO_MODE'] == 'on'
         elif tracking_data['STAGE'] == 'passport':
             reply_keyboard = kb.operator_keyboard
             reply_text = resources.inn_message
             tracking_data['STAGE'] = 'inn'
+            tracking_data['PHOTO_MODE'] == 'on'
         elif tracking_data['STAGE'] == 'inn':
             reply_keyboard = kb.operator_keyboard
             reply_text = resources.guarantee_message
             tracking_data['STAGE'] = 'guarantee'
+            tracking_data['PHOTO_MODE'] == 'on'
         elif tracking_data['STAGE'] == 'guarantee':
             reply_keyboard = kb.operator_keyboard
             reply_text = resources.pamyatka_message
             tracking_data['STAGE'] = 'pamyatka'
+            tracking_data['PHOTO_MODE'] == 'on'
         elif tracking_data['STAGE'] == 'pamyatka':
             reply_keyboard = kb.operator_keyboard
             reply_text = resources.condition_message
             tracking_data['STAGE'] = 'condition'
+            tracking_data['PHOTO_MODE'] == 'off'
         else:
             tracking_data['STAGE'] = ''
         save_message_to_history(reply_text, 'bot', chat_id)
@@ -191,7 +196,7 @@ def user_message_handler(viber, viber_request):
                 answer = [TextMessage(text=resources.chat_ending)]
                 viber.send_messages(chat_id, answer)
                 reply_keyboard = kb.menu_keyboard
-                reply_text = resources.greeting_message
+                reply_text = resources.menu_message
                 time.sleep(1)
             elif text == 'operator':
                 tracking_data['CHAT_MODE'] = 'on'
@@ -205,6 +210,7 @@ def user_message_handler(viber, viber_request):
             elif text == 'paid':
                 reply_keyboard = kb.operator_keyboard
                 reply_text = resources.payment_message
+                add_task(chat_id, tracking_data['DEAL'][0][0], tracking_data['DEAL'][0][1], tracking_data['PHONE'])
             elif text == 'register':
                 reply_keyboard = kb.menu_keyboard
                 reply_text = resources.menu_message
@@ -272,7 +278,6 @@ def user_message_handler(viber, viber_request):
                         reply_keyboard = addkb.SHARE_PHONE_KEYBOARD
                         reply_text = resources.phone_error
                 elif tracking_data['STAGE'] == 'deal':
-                    print('ya tut')
                     if len(text) == 9:
                         result = []
                         for item in tracking_data['DEALS']:
@@ -299,11 +304,14 @@ def user_message_handler(viber, viber_request):
                         reply_text = resources.deal_error
                 elif tracking_data['STAGE'] == 'menu':
                     reply_keyboard = kb.menu_keyboard
-                    reply_text = resources.greeting_message
+                    reply_text = resources.menu_message
                     try:
                         open(f'media/{chat_id}/history.txt', 'w').close()
                     except:
                         pass
+                elif tracking_data['PHOTO_MODE'] == 'on':
+                    reply_keyboard = kb.operator_keyboard
+                    reply_text = resources.not_photo_error_message
                 elif tracking_data['STAGE'] == 'contact':
                     tracking_data['NAME'] = text
                     reply_keyboard = kb.operator_keyboard
@@ -339,6 +347,7 @@ def user_message_handler(viber, viber_request):
                     tracking_data['SERIAL'] = text
                     reply_keyboard = kb.operator_keyboard
                     reply_text = resources.receipt_message
+                    tracking_data['PHOTO_MODE'] == 'on'
                 elif tracking_data['STAGE'] == 'guarantee':
                     reply_keyboard = kb.operator_keyboard
                     reply_text = resources.not_photo_error_message
@@ -365,14 +374,8 @@ def user_message_handler(viber, viber_request):
                     reply_text = resources.menu_message
                     tracking_data['STAGE'] = 'menu'
             save_message_to_history(reply_text, 'bot', chat_id)
-            counter = 0
-            for item in tracking_data.keys():
-                counter += len(item)
-                counter += len(tracking_data[item])
-            logger.info(counter)
             logger.info(tracking_data)
             tracking_data = json.dumps(tracking_data)
-            # viber.send_messages(chat_id, [TextMessage(text=tracking_data)])
             reply = [TextMessage(text=reply_text,
                                  keyboard=reply_keyboard,
                                  tracking_data=tracking_data,

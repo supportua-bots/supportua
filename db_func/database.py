@@ -23,12 +23,17 @@ def post_sql_query(sql_query):
 
 
 def create_table():
-    orders_query = '''CREATE TABLE IF NOT EXISTS DATA
+    query = '''CREATE TABLE IF NOT EXISTS DATA
                         (user_id TEXT,
                         phone TEXT,
                         chat_id TEXT);'''
-    post_sql_query(orders_query)
-
+    post_sql_query(query)
+    query = '''CREATE TABLE IF NOT EXISTS TASKS
+                        (user_id TEXT,
+                        deal_id TEXT,
+                        deal_title TEXT,
+                        phone TEXT);'''
+    post_sql_query(query)
 
 def input_new_users(users):
     unique_objects = []
@@ -49,3 +54,15 @@ def check_phone(phone):
                         f"phone = '{phone}';"
     rows = post_sql_query(sql_selection)
     return rows
+
+
+def add_task(user_id, deal_id, deal_title, phone):
+    query = f"INSERT INTO TASKS (user_id, deal_id, deal_title, phone) VALUES ('{user_id}', "\
+            f"'{deal_id}', '{deal_title}', '{phone}');"
+    post_sql_query(query)
+
+
+def get_all_tasks():
+    query = f"SELECT * FROM TASKS;"
+    tasks = post_sql_query(query)
+    return tasks

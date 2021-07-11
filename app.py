@@ -3,7 +3,7 @@ from multiprocessing import Process
 # from telegrambot import main as tgbot
 from jivochat import main as jivo
 from vibertelebot import main as vbbot
-
+from db_func.database import create_table
 
 app = Flask(__name__)
 
@@ -49,6 +49,7 @@ def server_launch():
 
 if __name__ == '__main__':
     try:
+        create_table()
         flask_server = Process(target=server_launch).start()
         # telegram_bot = Process(target=tgbot.main).start()
     except KeyboardInterrupt:
