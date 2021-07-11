@@ -82,11 +82,12 @@ def operator_connection(chat_id, tracking_data):
     try:
         with open(f'media/{chat_id}/links.txt', 'r') as f:
             content = f.read()
-            links = content.split(',')
-            for link in links:
-                link = link.split('@')[-1]
-                name = link.split('/')[-1]
-                jivochat.send_photo(chat_id, tracking_data['NAME'], link, name, 'viber')
+            if content:
+                links = content.split(',')
+                for link in links:
+                    link = link.split('@')[-1]
+                    name = link.split('/')[-1]
+                    jivochat.send_photo(chat_id, tracking_data['NAME'], link, name, 'viber')
     except IOError:
         logger.info("File not accessible")
     all_filenames = [i for i in glob.glob(f'media/{chat_id}/*.jpg')]
