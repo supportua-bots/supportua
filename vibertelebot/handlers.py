@@ -359,6 +359,7 @@ def user_message_handler(viber, viber_request):
                     tracking_data['BRAND'] = text
                     reply_keyboard = kb.operator_keyboard
                     reply_text = resources.serial_message
+                    tracking_data['PHOTO_MODE'] = 'on'
                     tracking_data['STAGE'] = 'receipt'
                 elif tracking_data['STAGE'] == 'condition':
                     tracking_data['CONDITION'] = text
