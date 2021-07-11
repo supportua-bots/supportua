@@ -66,7 +66,7 @@ def send_photo(user_id, name, file, filename, source):
             {
             "type": "photo",
             "file": file,
-            "file_name": name
+            "file_name": filename
             }
     }
     logger.info(input)

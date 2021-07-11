@@ -84,7 +84,7 @@ def operator_connection(chat_id, tracking_data):
             content = f.read()
             links = content.split(',')
             for link in links:
-                link = link.split(':')[-1]
+                link = link.split('@')[-1]
                 name = link.split('/')[-1]
                 jivochat.send_photo(chat_id, tracking_data['NAME'], link, name, 'viber')
     except IOError:
@@ -147,7 +147,7 @@ def user_message_handler(viber, viber_request):
                                 'viber')
         else:
             file_links = open(f'media/{chat_id}/links.txt', 'a')
-            file_links.write(f'{tracking_data["STAGE"]}:{link},')
+            file_links.write(f'{tracking_data["STAGE"]}@{link},')
             file_links.close()
             if tracking_data['STAGE'] == 'receipt':
                 reply_keyboard = kb.photo_keyboard
