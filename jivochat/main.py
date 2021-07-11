@@ -55,6 +55,18 @@ def main(data, source):
                 viber.send_messages(user, [TextMessage(text=text,
                                                        keyboard=reply_keyboard,
                                                         tracking_data=tracking_data)])
+        if data['message']['type'] == 'photo':
+            user = data['recipient']['id']
+            print(user)
+            link = data['message']['file']
+            tracking_data = {'NAME': user, 'HISTORY': '', 'CHAT_MODE': 'on', 'STAGE': 'menu'}
+            tracking_data = json.dumps(tracking_data)
+            keyboard = [('Завершити чат', 'end_chat')]
+            reply_keyboard = keyboard_consctructor(keyboard)
+            viber.send_messages(user, [PictureMessage(text='',
+                                                    keyboard=reply_keyboard,
+                                                    tracking_data=tracking_data,
+                                                    media=link)])
     else:
         user_id = str(re.findall(f'\[(.*?)\]', data['visitor']['name'])[0])
         if data['event_name'] == 'chat_accepted':

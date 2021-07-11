@@ -15,4 +15,6 @@ logger.add(
 if __name__ == '__main__':
     create_table()
     contacts = find_contact_by_phone()
-    logger.info(f'{len(input_new_users(contacts))} new contacts added.')
+    new_users = input_new_users(contacts)
+    logger.info(f'{len(new_users)} new contacts added.')
+    logger.info(new_users)

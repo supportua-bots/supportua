@@ -137,44 +137,51 @@ def user_message_handler(viber, viber_request):
         with open(img_path, 'wb') as f:
             f.write(response.content)
         link = upload_image(img_path)
-        file_links = open(f'media/{chat_id}/links.txt', 'a')
-        file_links.write(f'{tracking_data["STAGE"]}:{link},')
-        file_links.close()
-        if tracking_data['STAGE'] == 'receipt':
-            reply_keyboard = kb.photo_keyboard
-            reply_text = resources.photo_choice_message
-            tracking_data['STAGE'] = ''
-            tracking_data['PHOTO_MODE'] == 'on'
-        elif tracking_data['STAGE'] == 'passport':
-            reply_keyboard = kb.operator_keyboard
-            reply_text = resources.inn_message
-            tracking_data['STAGE'] = 'inn'
-            tracking_data['PHOTO_MODE'] == 'on'
-        elif tracking_data['STAGE'] == 'inn':
-            reply_keyboard = kb.operator_keyboard
-            reply_text = resources.guarantee_message
-            tracking_data['STAGE'] = 'guarantee'
-            tracking_data['PHOTO_MODE'] == 'on'
-        elif tracking_data['STAGE'] == 'guarantee':
-            reply_keyboard = kb.operator_keyboard
-            reply_text = resources.pamyatka_message
-            tracking_data['STAGE'] = 'pamyatka'
-            tracking_data['PHOTO_MODE'] == 'on'
-        elif tracking_data['STAGE'] == 'pamyatka':
-            reply_keyboard = kb.operator_keyboard
-            reply_text = resources.condition_message
-            tracking_data['STAGE'] = 'condition'
-            tracking_data['PHOTO_MODE'] == 'off'
+        if tracking_data['CHAT_MODE'] == 'on':
+            payload = json.loads(jsonpickle.encode(viber_request.message))
+            jivochat.send_photo(chat_id, tracking_data['NAME'],
+                                link,
+                                'user_image',
+                                'viber')
         else:
-            tracking_data['STAGE'] = ''
-        save_message_to_history(reply_text, 'bot', chat_id)
-        logger.info(tracking_data)
-        tracking_data = json.dumps(tracking_data)
-        reply = [TextMessage(text=reply_text,
-                             keyboard=reply_keyboard,
-                             tracking_data=tracking_data,
-                             min_api_version=3)]
-        viber.send_messages(chat_id, reply)
+            file_links = open(f'media/{chat_id}/links.txt', 'a')
+            file_links.write(f'{tracking_data["STAGE"]}:{link},')
+            file_links.close()
+            if tracking_data['STAGE'] == 'receipt':
+                reply_keyboard = kb.photo_keyboard
+                reply_text = resources.photo_choice_message
+                tracking_data['STAGE'] = ''
+                tracking_data['PHOTO_MODE'] == 'on'
+            elif tracking_data['STAGE'] == 'passport':
+                reply_keyboard = kb.operator_keyboard
+                reply_text = resources.inn_message
+                tracking_data['STAGE'] = 'inn'
+                tracking_data['PHOTO_MODE'] == 'on'
+            elif tracking_data['STAGE'] == 'inn':
+                reply_keyboard = kb.operator_keyboard
+                reply_text = resources.guarantee_message
+                tracking_data['STAGE'] = 'guarantee'
+                tracking_data['PHOTO_MODE'] == 'on'
+            elif tracking_data['STAGE'] == 'guarantee':
+                reply_keyboard = kb.operator_keyboard
+                reply_text = resources.pamyatka_message
+                tracking_data['STAGE'] = 'pamyatka'
+                tracking_data['PHOTO_MODE'] == 'on'
+            elif tracking_data['STAGE'] == 'pamyatka':
+                reply_keyboard = kb.operator_keyboard
+                reply_text = resources.condition_message
+                tracking_data['STAGE'] = 'condition'
+                tracking_data['PHOTO_MODE'] == 'off'
+            else:
+                tracking_data['STAGE'] = ''
+            save_message_to_history(reply_text, 'bot', chat_id)
+            logger.info(tracking_data)
+            tracking_data = json.dumps(tracking_data)
+            reply = [TextMessage(text=reply_text,
+                                 keyboard=reply_keyboard,
+                                 tracking_data=tracking_data,
+                                 min_api_version=3)]
+            viber.send_messages(chat_id, reply)
     else:
         text = viber_request.message.text
         save_message_to_history(text, 'user', chat_id)

@@ -5,12 +5,24 @@ from viberbot.api.messages.text_message import TextMessage
 from vibertelebot.main import viber
 from textskeyboards import viberkeyboards as kb
 from textskeyboards import texts as resources
+from loguru import logger
 
 
+logger.add(
+    "logs/info.log",
+    format="{time} {level} {message}",
+    level="DEBUG",
+    rotation="100 MB",
+    compression="zip",
+)
+
+
+@logger.catch
 def check_payment_status():
     tasks = get_all_tasks()
     for task in tasks:
         status = str(get_deal_by_id(task[1]))
+        logger.info(f'Checking payment status for {str(task)}')
         if status == '209':
             tracking_data = {'NAME': 'ViberUser',
                              'HISTORY': '',
