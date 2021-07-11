@@ -108,7 +108,7 @@ def find_contact_by_phone():
                     cleaned_phone = item['PHONE'][0]['VALUE'].replace('-', '').replace('+', '').replace(' ', '')
                     if cleaned_phone[0] == '0':
                         cleaned_phone = '38' + cleaned_phone
-                    result.append(item['ID'])
+                    result.append([cleaned_phone, item['ID']])
     return result
 
 
