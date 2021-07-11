@@ -60,7 +60,7 @@ def add_user(phone, chat_id, deal, name):
         post_sql_query(query)
     else:
         query = f"UPDATE DATA SET phone = '{phone}', chat_id = '{chat_id}', "\
-                f"deal = '{deal}' name = '{name}' WHERE phone = '{phone}';"
+                f"deal = '{deal}', name = '{name}' WHERE phone = '{phone}';"
         post_sql_query(query)
 
 
