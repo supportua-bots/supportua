@@ -26,14 +26,30 @@ def create_table():
     query = '''CREATE TABLE IF NOT EXISTS DATA
                         (user_id TEXT,
                         phone TEXT,
-                        chat_id TEXT);'''
+                        chat_id TEXT,
+                        deal TEXT,
+                        name TEXT);'''
     post_sql_query(query)
     query = '''CREATE TABLE IF NOT EXISTS TASKS
                         (user_id TEXT UNIQUE,
                         deal_id TEXT,
-                        deal_title TEXT,
                         phone TEXT);'''
     post_sql_query(query)
+
+
+def add_user(phone, chat_id, deal, name):
+    sql_selection = f"SELECT * FROM DATA WHERE "\
+                        f"phone = '{phone}';"
+    rows = post_sql_query(sql_selection)
+    if not rows:
+        query = f"INSERT INTO DATA (phone, chat_id, deal, name) VALUES ('{phone}', "\
+                f"'{chat_id}', '{deal}', '{name}');"
+        post_sql_query(query)
+    else:
+        query = f"UPDATE DATA SET phone = '{phone}', chat_id = '{chat_id}', "\
+                f"deal = '{deal}' name = '{name}' WHERE phone = '{phone}';"
+        post_sql_query(query)
+
 
 def input_new_users(users):
     unique_objects = []
@@ -56,13 +72,13 @@ def check_phone(phone):
     return rows
 
 
-def add_task(user_id, deal_id, deal_title, phone):
+def add_task(user_id, deal_id, phone):
     sql_selection = f"SELECT * FROM TASKS WHERE "\
                         f"user_id = '{user_id}';"
     rows = post_sql_query(sql_selection)
     if not rows:
-        query = f"INSERT INTO TASKS (user_id, deal_id, deal_title, phone) VALUES ('{user_id}', "\
-                f"'{deal_id}', '{deal_title}', '{phone}');"
+        query = f"INSERT INTO TASKS (user_id, deal_id, phone) VALUES ('{user_id}', "\
+                f"'{deal_id}', '{phone}');"
         post_sql_query(query)
 
 
@@ -83,3 +99,10 @@ def delete_task(user_id):
     sql_selection = f"DELETE FROM TASKS WHERE "\
                         f"user_id = '{user_id}';"
     post_sql_query(sql_selection)
+
+
+def check_user(chat_id):
+    sql_selection = f"SELECT * FROM DATA WHERE "\
+                        f"chat_id = '{chat_id}';"
+    rows = post_sql_query(sql_selection)
+    return rows

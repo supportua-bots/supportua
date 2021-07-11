@@ -82,7 +82,7 @@ def find_deal_by_contact(id):
         logger.info(x.json())
         if 'result' in x.json():
             for item in x.json()['result']:
-                ids.append([item['ID'], item['TITLE']])
+                ids.append(item['ID'])
         return ids
     return []
 
@@ -108,7 +108,7 @@ def find_contact_by_phone():
                     cleaned_phone = item['PHONE'][0]['VALUE'].replace('-', '').replace('+', '').replace(' ', '')
                     if cleaned_phone[0] == '0':
                         cleaned_phone = '38' + cleaned_phone
-                    result.append([cleaned_phone, item['ID']])
+                    result.append(item['ID'])
     return result
 
 

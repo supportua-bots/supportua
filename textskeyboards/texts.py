@@ -27,6 +27,8 @@ link_message = 'Будь-ласка сплатіть за посиланням [
 payment_message = 'Очікуйте будь-ласка оновлення статусу оплати, Вам прийде повідомлення.'
 rozetka_link = 'Вкажіть посилання на товар Rozetka у форматі https://rozetka.com.ua/XXXXX'
 wait_for_operator = 'Дякуємо, очікуйте відповіді оператора.'
+operator_ended_chat = 'Оператор завершив чат.'
+operator_connected = 'Оператор підключився до чату.'
 
 
 

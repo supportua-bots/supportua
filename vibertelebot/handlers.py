@@ -21,7 +21,7 @@ from jivochat import sender as jivochat
 from jivochat.utils import resources as jivosource
 from bitrix.crm_tools import (find_deal_by_contact,
                             find_deal_by_title, upload_image, get_deal_by_id, get_link_by_id)
-from db_func.database import check_phone, add_task, task_active
+from db_func.database import check_phone, add_task, task_active, add_user
 from textskeyboards import viberkeyboards as kb
 from scraper.headlines import get_product_title
 from loguru import logger
@@ -49,7 +49,6 @@ def deals_grabber(phone, chat_id, tracking_data, viber):
         logger.info(contact_id)
         deals = find_deal_by_contact(contact_id[0][0])
         logger.info(deals)
-        tracking_data['DEALS'] = deals
         if len(deals) == 0 or len(deals) > 1:
             reply_keyboard = kb.operator_keyboard
             reply_text = resources.specify_deal_id
@@ -122,6 +121,9 @@ def user_message_handler(viber, viber_request):
 
     if isinstance(message, ContactMessage):
         # Handling reply after user shared his contact infromation
+        logger.info(message.contact.name)
+        if message.contact.name:
+            tracking_data['NAME'] = message.contact.name
         if 'PHONE' in tracking_data:
             reply_keyboard = kb.operator_keyboard
             reply_text = resources.specify_deal_id
@@ -228,7 +230,7 @@ def user_message_handler(viber, viber_request):
                 reply_keyboard = kb.confirmation_keyboard
                 reply_text = resources.repair_message
             elif text == 'paid':
-                add_task(chat_id, tracking_data['DEAL'][0][0], tracking_data['DEAL'][0][1], tracking_data['PHONE'])
+                add_task(chat_id, tracking_data['DEAL'], tracking_data['PHONE'])
                 answer = [TextMessage(text=resources.payment_message)]
                 viber.send_messages(chat_id, answer)
                 reply_keyboard = kb.menu_keyboard
@@ -242,14 +244,14 @@ def user_message_handler(viber, viber_request):
                     time.sleep(1)
                 else:
                     if 'DEAL' in tracking_data and len(tracking_data['DEAL']) > 0:
-                        status = str(get_deal_by_id(tracking_data['DEAL'][0][0]))
+                        status = str(get_deal_by_id(tracking_data['DEAL']))
                         logger.info(status)
                         if status == '209':
                             reply_keyboard = kb.operator_keyboard
                             reply_text = resources.rozetka_link
                             tracking_data['STAGE'] = 'rozetka'
                         else:
-                            pay_link = get_link_by_id(tracking_data['DEAL'][0][0])
+                            pay_link = get_link_by_id(tracking_data['DEAL'])
                             if pay_link:
                                 reply_keyboard = kb.pay_keyboard
                                 reply_text = resources.link_message.replace('[string]', pay_link)
@@ -286,7 +288,6 @@ def user_message_handler(viber, viber_request):
                                 logger.info(contact_id)
                                 deals = find_deal_by_contact(contact_id[0][1])
                                 logger.info(deals)
-                                tracking_data['DEALS'] = deals
                                 if len(deals) == 0 or len(deals) > 1:
                                     reply_keyboard = kb.operator_keyboard
                                     reply_text = resources.specify_deal_id
@@ -306,27 +307,22 @@ def user_message_handler(viber, viber_request):
                         reply_text = resources.phone_error
                 elif tracking_data['STAGE'] == 'deal':
                     if len(text) == 9:
-                        result = []
-                        for item in tracking_data['DEALS']:
-                            if text == item[1]:
-                                tracking_data['DEAL'] = item
-                                result.append(item)
-                        if result:
+                        deal_id = find_deal_by_title(text)
+                        if deal_id != []:
+                            tracking_data['DEAL'] = deal_id[0]
+                            add_user(tracking_data['PHONE'],
+                                     chat_id,
+                                     tracking_data['DEAL'],
+                                     tracking_data['NAME'])
                             reply_keyboard = kb.menu_keyboard
                             reply_text = resources.menu_message
+                            tracking_data['STAGE'] = 'menu'
                         else:
-                            deal_id = find_deal_by_title(text)
-                            if deal_id != []:
-                                tracking_data['DEAL'] = deal_id
-                                reply_keyboard = kb.menu_keyboard
-                                reply_text = resources.menu_message
-                                tracking_data['STAGE'] = 'menu'
-                            else:
-                                tracking_data['CHAT_MODE'] = 'on'
-                                operator_connection(chat_id, tracking_data)
-                                reply_keyboard = kb.end_chat_keyboard
-                                reply_text = resources.operator_message
-                                tracking_data['HISTORY'] = ''
+                            tracking_data['CHAT_MODE'] = 'on'
+                            operator_connection(chat_id, tracking_data)
+                            reply_keyboard = kb.end_chat_keyboard
+                            reply_text = resources.operator_message
+                            tracking_data['HISTORY'] = ''
                     else:
                         reply_keyboard = kb.operator_keyboard
                         reply_text = resources.deal_error

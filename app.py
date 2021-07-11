@@ -18,20 +18,6 @@ logger.add(
 app = Flask(__name__)
 
 
-# @app.route('/jivochatgram', methods=['GET', 'POST'])
-# def jivochat_endpoint_telegram():
-#     source = 'telegram'
-#     data = request.get_json()
-#     logger.info(data)
-#     returned_data = jivo.main(data, source)
-#     response = app.response_class(
-#         response=json.dumps(returned_data),
-#         status=200,
-#         mimetype='application/json'
-#     )
-#     return response
-
-
 @app.route('/jivochatviber', methods=['GET', 'POST'])
 def jivochat_endpoint_viber():
     source = 'viber'
@@ -61,9 +47,6 @@ if __name__ == '__main__':
     try:
         create_table()
         flask_server = Process(target=server_launch).start()
-        # telegram_bot = Process(target=tgbot.main).start()
     except KeyboardInterrupt:
         flask_server.terminate()
-        # telegram_bot.terminate()
         flask_server.join()
-        # telegram_bot.join()
