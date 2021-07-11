@@ -1,5 +1,6 @@
 __pycache__/
 migrations/
+textskeyboards/
 env/
 media/
 .env
