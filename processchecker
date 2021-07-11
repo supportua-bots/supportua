@@ -8,7 +8,7 @@ $PGREP ${MYPROG}
 if [ $? -ne 0 ]
 then
     source "/var/www/chatboto/.pyenv/versions/3.8.5/envs/env/bin/activate"
-    bash -c exec -a mpbot /var/www/chatboto/.pyenv/versions/3.8.5/envs/env/bin/gunicorn --daemon --bind 0.0.0.0:8000 app:app
+    bash -c exec -a mpbot /var/www/chatboto/.pyenv/versions/3.8.5/envs/env/bin/gunicorn --daemon --bind 0.0.0.0:5000 app:app
 fi
 
 # if [ $? -ne 0 ]
