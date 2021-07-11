@@ -3,8 +3,19 @@ import sys
 import sqlite3
 import traceback
 from sqlite3 import Error
+from loguru import logger
 
 
+logger.add(
+    "logs/info.log",
+    format="{time} {level} {message}",
+    level="DEBUG",
+    rotation="100 MB",
+    compression="zip",
+)
+
+
+@logger.catch
 def post_sql_query(sql_query):
     db_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'my.db')
     with sqlite3.connect(db_path) as connection:
@@ -22,6 +33,7 @@ def post_sql_query(sql_query):
         return result
 
 
+@logger.catch
 def create_table():
     query = '''CREATE TABLE IF NOT EXISTS DATA
                         (user_id TEXT,
@@ -37,6 +49,7 @@ def create_table():
     post_sql_query(query)
 
 
+@logger.catch
 def add_user(phone, chat_id, deal, name):
     sql_selection = f"SELECT * FROM DATA WHERE "\
                         f"phone = '{phone}';"
@@ -51,9 +64,11 @@ def add_user(phone, chat_id, deal, name):
         post_sql_query(query)
 
 
+@logger.catch
 def input_new_users(users):
     unique_objects = []
     for user in users:
+        logger.info(user)
         sql_selection = f"SELECT * FROM DATA WHERE "\
                             f"phone = '{user[0]}';"
         rows = post_sql_query(sql_selection)
@@ -65,6 +80,7 @@ def input_new_users(users):
     return unique_objects
 
 
+@logger.catch
 def check_phone(phone):
     sql_selection = f"SELECT * FROM DATA WHERE "\
                         f"phone = '{phone}';"
@@ -72,6 +88,7 @@ def check_phone(phone):
     return rows
 
 
+@logger.catch
 def add_task(user_id, deal_id, phone):
     sql_selection = f"SELECT * FROM TASKS WHERE "\
                         f"user_id = '{user_id}';"
@@ -82,12 +99,14 @@ def add_task(user_id, deal_id, phone):
         post_sql_query(query)
 
 
+@logger.catch
 def get_all_tasks():
     query = f"SELECT * FROM TASKS;"
     tasks = post_sql_query(query)
     return tasks
 
 
+@logger.catch
 def task_active(user_id):
     sql_selection = f"SELECT * FROM TASKS WHERE "\
                         f"user_id = '{user_id}';"
@@ -95,12 +114,14 @@ def task_active(user_id):
     return bool(post_sql_query(sql_selection))
 
 
+@logger.catch
 def delete_task(user_id):
     sql_selection = f"DELETE FROM TASKS WHERE "\
                         f"user_id = '{user_id}';"
     post_sql_query(sql_selection)
 
 
+@logger.catch
 def check_user(chat_id):
     sql_selection = f"SELECT * FROM DATA WHERE "\
                         f"chat_id = '{chat_id}';"
