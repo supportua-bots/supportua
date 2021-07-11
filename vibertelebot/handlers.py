@@ -171,7 +171,7 @@ def user_message_handler(viber, viber_request):
                 reply_keyboard = kb.operator_keyboard
                 reply_text = resources.condition_message
                 tracking_data['STAGE'] = 'condition'
-                tracking_data['PHOTO_MODE'] == 'off'
+                tracking_data['PHOTO_MODE'] = 'off'
             else:
                 tracking_data['STAGE'] = ''
             save_message_to_history(reply_text, 'bot', chat_id)
