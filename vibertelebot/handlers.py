@@ -318,6 +318,7 @@ def user_message_handler(viber, viber_request):
                                 tracking_data['DEAL'] = deal_id
                                 reply_keyboard = kb.menu_keyboard
                                 reply_text = resources.menu_message
+                                tracking_data['STAGE'] = 'menu'
                             else:
                                 tracking_data['CHAT_MODE'] = 'on'
                                 operator_connection(chat_id, tracking_data)
