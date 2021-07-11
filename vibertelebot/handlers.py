@@ -375,7 +375,7 @@ def user_message_handler(viber, viber_request):
                     tracking_data['SERIAL'] = text
                     reply_keyboard = kb.operator_keyboard
                     reply_text = resources.receipt_message
-                    tracking_data['PHOTO_MODE'] == 'on'
+                    tracking_data['PHOTO_MODE'] = 'on'
                 elif tracking_data['STAGE'] == 'guarantee':
                     reply_keyboard = kb.operator_keyboard
                     reply_text = resources.not_photo_error_message
