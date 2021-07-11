@@ -35,19 +35,19 @@ def send_message(user_id, name, text, source):
             {
             "type": "text",
             "id": "customer_message_id",
-            "text": text
+            "text": str(text)
             }
     }
-    print(input)
-    print(URL)
+    logger.info(input)
+    logger.info(URL)
     x = requests.post(URL,
                       json=input,
                       headers={'content-type':'application/json'})
-    print(x)
+    logger.info(x)
     try:
-        print(x.json())
+        logger.info(x.json())
     except:
-        print(x.text)
+        logger.info(x.text)
 
 
 @logger.catch

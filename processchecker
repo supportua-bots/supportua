@@ -10,10 +10,3 @@ then
     source "/var/www/chatboto/.pyenv/versions/3.8.5/envs/env/bin/activate"
     bash -c "exec -a mpbot /var/www/chatboto/.pyenv/versions/3.8.5/envs/env/bin/gunicorn --bind 0.0.0.0:5000 app:app &"
 fi
-
-# if [ $? -ne 0 ]
-# then
-#     source "/var/www/chatboto/supportua/env/bin/activate"
-#     python3 /var/www/chatboto/supportua/tglaunch.py
-#     echo "Vualia"
-# fi
