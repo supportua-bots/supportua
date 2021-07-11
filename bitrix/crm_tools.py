@@ -17,15 +17,6 @@ load_dotenv(dotenv_path)
 # OWNER_ID, SECTION_ID = range(2)
 
 
-logger.add(
-    "logs/info.log",
-    format="{time} {level} {message}",
-    level="DEBUG",
-    rotation="100 MB",
-    compression="zip",
-)
-
-
 @logger.catch
 def add_to_crm(category, reason, phone, brand, serial, name, date, time):
     MAIN_URL = 'https://supportua.bitrix24.ua/rest/2067/cml51zgfaxwxwa2x/crm.deal.add.json?'

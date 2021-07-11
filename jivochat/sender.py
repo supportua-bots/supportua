@@ -10,14 +10,6 @@ load_dotenv(dotenv_path)
 TELEGRAM_URL = os.getenv("JIVO_TELEGRAM_WEBHOOK_URL")
 VIBER_URL = os.getenv("JIVO_VIBER_WEBHOOK_URL")
 
-logger.add(
-    "logs/info.log",
-    format="{time} {level} {message}",
-    level="DEBUG",
-    rotation="100 MB",
-    compression="zip",
-)
-
 
 @logger.catch
 def send_message(user_id, name, text, source):

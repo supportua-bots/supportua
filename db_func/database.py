@@ -6,15 +6,6 @@ from sqlite3 import Error
 from loguru import logger
 
 
-logger.add(
-    "logs/info.log",
-    format="{time} {level} {message}",
-    level="DEBUG",
-    rotation="100 MB",
-    compression="zip",
-)
-
-
 @logger.catch
 def post_sql_query(sql_query):
     db_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'my.db')

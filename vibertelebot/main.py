@@ -28,14 +28,6 @@ viber = Api(BotConfiguration(
     auth_token=os.getenv('VIBER_TOKEN')
 ))
 
-logger.add(
-    "logs/info.log",
-    format="{time} {level} {message}",
-    level="DEBUG",
-    rotation="100 MB",
-    compression="zip",
-)
-
 
 @logger.catch
 def main(request):

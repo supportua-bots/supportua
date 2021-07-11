@@ -7,14 +7,6 @@ from db_func.database import create_table
 from loguru import logger
 
 
-logger.add(
-    "logs/info.log",
-    format="{time} {level} {message}",
-    level="DEBUG",
-    rotation="100 MB",
-    compression="zip",
-)
-
 app = Flask(__name__)
 
 
