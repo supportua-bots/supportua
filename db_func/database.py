@@ -23,11 +23,12 @@ def post_sql_query(sql_query):
         try:
             cursor.execute(sql_query)
         except Error as er:
-            print('SQLite error: %s' % (' '.join(er.args)))
-            print("Exception class is: ", er.__class__)
-            print('SQLite traceback: ')
+            logger.info(sql_query)
+            logger.info('SQLite error: %s' % (' '.join(er.args)))
+            logger.info("Exception class is: ", er.__class__)
+            logger.info('SQLite traceback: ')
             exc_type, exc_value, exc_tb = sys.exc_info()
-            print(traceback.format_exception(exc_type, exc_value, exc_tb))
+            logger.info(traceback.format_exception(exc_type, exc_value, exc_tb))
             pass
         result = cursor.fetchall()
         return result
