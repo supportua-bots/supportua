@@ -19,7 +19,7 @@ from viberbot.api.messages.rich_media_message import RichMediaMessage
 from viberbot.api.messages.picture_message import PictureMessage
 from jivochat import sender as jivochat
 from jivochat.utils import resources as jivosource
-from bitrix.crm_tools import (find_deal_by_contact,
+from bitrix.crm_tools import (find_deal_by_contact, send_model_field,
                             find_deal_by_title, upload_image, get_deal_by_id, get_link_by_id)
 from db_func.database import check_phone, add_task, task_active, add_user
 from textskeyboards import viberkeyboards as kb
@@ -227,6 +227,10 @@ def user_message_handler(viber, viber_request):
             elif text == 'repair':
                 reply_keyboard = kb.confirmation_keyboard
                 reply_text = resources.repair_message
+            elif text == 'rozetka':
+                reply_keyboard = kb.operator_keyboard
+                reply_text = resources.rozetka_link
+                tracking_data['STAGE'] = 'rozetka'
             elif text == 'paid':
                 add_task(chat_id, tracking_data['DEAL'], tracking_data['PHONE'])
                 answer = [TextMessage(text=resources.payment_message)]
@@ -384,7 +388,11 @@ def user_message_handler(viber, viber_request):
                     if 'rozetka.com.ua' in text:
                         title = ''
                         try:
-                            title = str(get_product_title(text)) + '\n'
+                            parsing_result = get_product_title(text)
+                            title = str(parsing_result[0]) + '\n'
+                            send_model_field(tracking_data['DEAL'],
+                                             parsing_result[0],
+                                             parsing_result[1])
                         except Exception as e:
                             logger.info(e)
                     reply_keyboard = kb.operator_keyboard

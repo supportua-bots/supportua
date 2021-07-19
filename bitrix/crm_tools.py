@@ -143,8 +143,18 @@ def get_link_by_id(id):
     return result
 
 
+@logger.catch
+def send_model_field(deal_id, item_name, category):
+    MAIN_URL = 'https://supportua.bitrix24.ua/rest/2067/zgbq9h1f38vnszm2/crm.deal.update.json?'
+    fields = {'id': deal_id,
+              'fields[UF_CRM_1623160178062]': item_name,
+              'fields[UF_CRM_1626684024072]': category}
+    url = MAIN_URL + urlencode(fields, doseq=True)
+    x = requests.get(url)
+    logger.info(x.json())
 
-# if __name__ == '__main__':
+if __name__ == '__main__':
+    send_model_field('21085', 'Test name', 'Test category')
     # get_deal_by_id('21525')
     # deals_id = find_contact_by_phone('380982676660')
     # logger.info(deals_id)
