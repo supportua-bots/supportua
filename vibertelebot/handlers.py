@@ -19,7 +19,7 @@ from viberbot.api.messages.rich_media_message import RichMediaMessage
 from viberbot.api.messages.picture_message import PictureMessage
 from jivochat import sender as jivochat
 from jivochat.utils import resources as jivosource
-from bitrix.crm_tools import (find_deal_by_contact, send_model_field,
+from bitrix.crm_tools import (find_deal_by_contact, send_model_field, send_to_erp,
                             find_deal_by_title, upload_image, get_deal_by_id, get_link_by_id)
 from db_func.database import check_phone, add_task, task_active, add_user
 from textskeyboards import viberkeyboards as kb
@@ -133,7 +133,10 @@ def user_message_handler(viber, viber_request):
         response = requests.get(viber_request.message.media)
         if not os.path.exists(f'media/{chat_id}'):
             os.makedirs(f'media/{chat_id}')
-        img_path = f"media/{chat_id}/{viber_request.message_token}.jpg"
+        if tracking_data['PHOTO_MODE'] == 'on':
+            img_path = f"media/{chat_id}/{tracking_data['STAGE']}.jpg"
+        else:
+            img_path = f"media/{chat_id}/{viber_request.message_token}.jpg"
         with open(img_path, 'wb') as f:
             f.write(response.content)
         link = upload_image(img_path)
@@ -160,14 +163,14 @@ def user_message_handler(viber, viber_request):
             elif tracking_data['STAGE'] == 'inn':
                 reply_keyboard = kb.operator_keyboard
                 reply_text = resources.guarantee_message
-                tracking_data['STAGE'] = 'guarantee'
+                tracking_data['STAGE'] = 'warranty'
                 tracking_data['PHOTO_MODE'] == 'on'
-            elif tracking_data['STAGE'] == 'guarantee':
+            elif tracking_data['STAGE'] == 'warranty':
                 reply_keyboard = kb.operator_keyboard
                 reply_text = resources.pamyatka_message
-                tracking_data['STAGE'] = 'pamyatka'
+                tracking_data['STAGE'] = 'memo'
                 tracking_data['PHOTO_MODE'] == 'on'
-            elif tracking_data['STAGE'] == 'pamyatka':
+            elif tracking_data['STAGE'] == 'memo':
                 reply_keyboard = kb.operator_keyboard
                 reply_text = resources.condition_message
                 tracking_data['STAGE'] = 'condition'
@@ -232,7 +235,7 @@ def user_message_handler(viber, viber_request):
                 reply_text = resources.rozetka_link
                 tracking_data['STAGE'] = 'rozetka'
             elif text == 'paid':
-                add_task(chat_id, tracking_data['DEAL'], tracking_data['PHONE'])
+                add_task(chat_id, tracking_data['DEAыL'], tracking_data['PHONE'])
                 answer = [TextMessage(text=resources.payment_message)]
                 viber.send_messages(chat_id, answer)
                 reply_keyboard = kb.menu_keyboard
@@ -271,10 +274,10 @@ def user_message_handler(viber, viber_request):
                 reply_keyboard = kb.operator_keyboard
                 reply_text = resources.passport_message
                 tracking_data['STAGE'] = 'passport'
-            elif text == 'guarantee':
+            elif text == 'warranty':
                 reply_keyboard = kb.operator_keyboard
                 reply_text = resources.guarantee_message
-                tracking_data['STAGE'] = 'guarantee'
+                tracking_data['STAGE'] = 'warranty'
             else:
                 if tracking_data['STAGE'] == 'phone':
                     if text[:3] == '380' and len(text) == 12:
@@ -365,14 +368,16 @@ def user_message_handler(viber, viber_request):
                     tracking_data['DETAIL'] = text
                     reply_keyboard = kb.return_keyboard
                     reply_text = resources.finish_message
+                    send_to_erp(tracking_data, chat_id)
                     tracking_data['STAGE'] = ''
+
                 ################################################################
                 elif tracking_data['STAGE'] == 'receipt':
                     tracking_data['SERIAL'] = text
                     reply_keyboard = kb.operator_keyboard
                     reply_text = resources.receipt_message
                     tracking_data['PHOTO_MODE'] = 'on'
-                elif tracking_data['STAGE'] == 'guarantee':
+                elif tracking_data['STAGE'] == 'warranty':
                     reply_keyboard = kb.operator_keyboard
                     reply_text = resources.not_photo_error_message
                 elif tracking_data['STAGE'] == 'passport':
@@ -381,7 +386,7 @@ def user_message_handler(viber, viber_request):
                 elif tracking_data['STAGE'] == 'inn':
                     reply_keyboard = kb.operator_keyboard
                     reply_text = resources.not_photo_error_message
-                elif tracking_data['STAGE'] == 'pamyatka':
+                elif tracking_data['STAGE'] == 'memo':
                     reply_keyboard = kb.operator_keyboard
                     reply_text = resources.not_photo_error_message
                 elif tracking_data['STAGE'] == 'rozetka':

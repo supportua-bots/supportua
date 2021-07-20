@@ -153,8 +153,68 @@ def send_model_field(deal_id, item_name, category):
     x = requests.get(url)
     logger.info(x.json())
 
+
+@logger.catch
+def send_to_erp(tracking_data, chat_id):
+    MAIN_URL = 'https://demoerp.support.ua/api/v1/appeal/manage'
+    header = {'Authorization': 'Bearer $2y$10$6qgC45p616zB2zllWaiTs.fFE2syQkThx8qFOcyx1TxjO/M4LNmra'}
+    datapoints = ['NAME', 'PHONE', 'CITY', 'BRAND', 'SERIAL', 'CONDITION', 'DETAIL']
+    for datapoint in datapoints:
+        if datapoint not in tracking_data:
+            if datapoint == 'PHONE':
+                tracking_data[datapoint] = 1234567890
+            else:
+                tracking_data[datapoint] = ''
+        else:
+            if datapoint == 'PHONE':
+                try:
+                    tracking_data[datapoint] = int(tracking_data[datapoint])
+                except:
+                    tracking_data[datapoint] = 1234567890
+    names = tracking_data['NAME'].split(' ')
+    if len(names) == 3:
+        first = names[1]
+        last = names[0]
+        middle = names[2]
+    elif len(names) == 2:
+        first = names[1]
+        last = names[0]
+        middle = ''
+    else:
+        first = names[0]
+        last = ''
+        middle = ''
+    fields = {
+                'source': 'viber_mp_bot',
+                'first_name': first,
+                'second_name': middle,
+                'last_name': last,
+                'phone': tracking_data['PHONE'],
+                'city_name': tracking_data['CITY'],
+                'brand_name': tracking_data['BRAND'],
+                'model_name': '',
+                'serial': tracking_data['SERIAL'],
+                'condition': tracking_data['CONDITION'],
+                'detail': tracking_data['DETAIL'],
+                }
+    files = {}
+    items = ['passport', 'inn', 'memo', 'warranty', 'receipt']
+    for item in items:
+        try:
+            file = open(f'media/{chat_id}/{item}.jpg', 'rb')
+            files[item] = (f'{item}.jpg', file)
+        except Exception as e:
+            print(e)
+    x = requests.post(MAIN_URL, data=fields, headers=header, files=files)
+    logger.info(x.headers)
+    logger.info(x.text)
+
+
 if __name__ == '__main__':
     send_model_field('21085', 'Test name', 'Test category')
+    chat_id = '+XS2XxGhTunlRnOPpEl2NQ=='
+    tracking_data = {'PHONE': 1111111111}
+    send_to_erp(tracking_data, chat_id)
     # get_deal_by_id('21525')
     # deals_id = find_contact_by_phone('380982676660')
     # logger.info(deals_id)
