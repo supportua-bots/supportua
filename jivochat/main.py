@@ -65,6 +65,7 @@ def main(data, source):
         if data['message']['type'] == 'photo':
             user = data['recipient']['id']
             user_info  = check_user(user)
+            logger.info(user_info)
             if user_info:
                 username = user_info[4]
                 phone = user_info[1]
