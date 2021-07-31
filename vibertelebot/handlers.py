@@ -20,7 +20,8 @@ from viberbot.api.messages.picture_message import PictureMessage
 from jivochat import sender as jivochat
 from jivochat.utils import resources as jivosource
 from bitrix.crm_tools import (find_deal_by_contact, send_model_field, send_to_erp,
-                            find_deal_by_title, upload_image, get_deal_by_id, get_link_by_id)
+                            find_deal_by_title, upload_image, get_deal_by_id, get_link_by_id,
+                            check_open_deals)
 from db_func.database import check_phone, add_task, task_active, add_user
 from textskeyboards import viberkeyboards as kb
 from scraper.headlines import get_product_title
@@ -48,14 +49,34 @@ def deals_grabber(phone, chat_id, tracking_data, viber):
         logger.info(contact_id)
         deals = find_deal_by_contact(contact_id[0][0])
         logger.info(f'Deals: {deals}')
-        if len(deals) == 0 or len(deals) > 1:
-            reply_keyboard = kb.operator_keyboard
-            reply_text = resources.specify_deal_id
-            tracking_data['STAGE'] = 'deal'
-        else:
-            reply_keyboard = kb.menu_keyboard
+        if len(deals) == 0:
+            reply_keyboard = addkb.SHARE_PHONE_KEYBOARD
+            reply_text = resources.phone_error
+            tracking_data['STAGE'] = 'phone'
+            logger.info(tracking_data)
+        elif len(deals) > 1:
+            text_deals = ','.join(deals)
+            add_user(tracking_data['PHONE'],
+                     chat_id,
+                     text_deals,
+                     tracking_data['NAME'])
+            if check_open_deals(deals):
+                reply_keyboard = kb.menu_keyboard
+            else:
+                reply_keyboard = kb.part_menu_keyboard
             reply_text = resources.menu_message
-            tracking_data['DEAL'] = deals[0]
+            tracking_data['STAGE'] = 'menu'
+        else:
+            add_user(tracking_data['PHONE'],
+                     chat_id,
+                     deals[0],
+                     tracking_data['NAME'])
+            if check_open_deals(tracking_data['DEALS']):
+                reply_keyboard = kb.menu_keyboard
+            else:
+                reply_keyboard = kb.part_menu_keyboard
+            reply_text = resources.menu_message
+            tracking_data['DEALS'] = deals[0]
     else:
         reply_keyboard = addkb.SHARE_PHONE_KEYBOARD
         reply_text = resources.phone_error
@@ -113,7 +134,7 @@ def user_message_handler(viber, viber_request):
     reply_alt_text = ''
     reply_rich_media = {}
     tracking_data = json.loads(tracking_data)
-    data_keys = {'NAME': 'ViberUser', 'HISTORY': '', 'CHAT_MODE': 'off', 'STAGE': 'menu', 'PHOTO_MODE': 'off'}
+    data_keys = {'NAME': 'ViberUser', 'HISTORY': '', 'CHAT_MODE': 'off', 'STAGE': 'menu', 'PHOTO_MODE': 'off', 'DEALS': ''}
     for k in data_keys:
         if k not in tracking_data:
             tracking_data[k] = data_keys[k]
@@ -205,7 +226,10 @@ def user_message_handler(viber, viber_request):
 
         else:
             if text == 'menu':
-                reply_keyboard = kb.menu_keyboard
+                if check_open_deals(tracking_data['DEALS']):
+                    reply_keyboard = kb.menu_keyboard
+                else:
+                    reply_keyboard = kb.part_menu_keyboard
                 reply_text = resources.menu_message
                 try:
                     open(f'media/{chat_id}/history.txt', 'w').close()
@@ -218,7 +242,10 @@ def user_message_handler(viber, viber_request):
                                       'viber')
                 answer = [TextMessage(text=resources.chat_ending)]
                 viber.send_messages(chat_id, answer)
-                reply_keyboard = kb.menu_keyboard
+                if check_open_deals(tracking_data['DEALS']):
+                    reply_keyboard = kb.menu_keyboard
+                else:
+                    reply_keyboard = kb.part_menu_keyboard
                 reply_text = resources.menu_message
                 time.sleep(1)
             elif text == 'operator':
@@ -235,37 +262,27 @@ def user_message_handler(viber, viber_request):
                 reply_text = resources.rozetka_link
                 tracking_data['STAGE'] = 'rozetka'
             elif text == 'paid':
-                add_task(chat_id, tracking_data['DEAыL'], tracking_data['PHONE'])
+                add_task(chat_id, tracking_data['DEAL'], tracking_data['PHONE'])
                 answer = [TextMessage(text=resources.payment_message)]
                 viber.send_messages(chat_id, answer)
-                reply_keyboard = kb.menu_keyboard
+                if check_open_deals(tracking_data['DEALS']):
+                    reply_keyboard = kb.menu_keyboard
+                else:
+                    reply_keyboard = kb.part_menu_keyboard
                 reply_text = resources.menu_message
             elif text == 'register':
-                if task_active(chat_id):
-                    answer = [TextMessage(text=resources.payment_message)]
-                    viber.send_messages(chat_id, answer)
-                    reply_keyboard = kb.menu_keyboard
-                    reply_text = resources.menu_message
-                    time.sleep(1)
+                status = str(get_deal_by_id(check_open_deals(tracking_data['DEALS'])))
+                logger.info(status)
+                if status == '209':
+                    reply_keyboard = kb.operator_keyboard
+                    reply_text = resources.rozetka_link
+                    tracking_data['STAGE'] = 'rozetka'
                 else:
-                    if 'DEAL' in tracking_data and len(tracking_data['DEAL']) > 0:
-                        status = str(get_deal_by_id(tracking_data['DEAL']))
-                        logger.info(status)
-                        if status == '209':
-                            reply_keyboard = kb.operator_keyboard
-                            reply_text = resources.rozetka_link
-                            tracking_data['STAGE'] = 'rozetka'
-                        else:
-                            pay_link = get_link_by_id(tracking_data['DEAL'])
-                            if pay_link:
-                                reply_keyboard = kb.pay_keyboard
-                                reply_text = resources.link_message.replace('[string]', pay_link)
-                            else:
-                                reply_keyboard = kb.operator_keyboard
-                                reply_text = resources.deal_error
-                    else:
-                        reply_keyboard = kb.operator_keyboard
-                        reply_text = resources.deal_error
+                    tracking_data['CHAT_MODE'] = 'on'
+                    operator_connection(chat_id, tracking_data)
+                    reply_keyboard = kb.end_chat_keyboard
+                    reply_text = resources.payment_error
+                    tracking_data['HISTORY'] = ''
             elif text == 'continue':
                 reply_keyboard = kb.operator_keyboard
                 reply_text = resources.name_message
@@ -281,40 +298,17 @@ def user_message_handler(viber, viber_request):
             else:
                 if tracking_data['STAGE'] == 'phone':
                     if text[:3] == '380' and len(text) == 12:
-                        if 'PHONE' in tracking_data:
-                            reply_keyboard = kb.operator_keyboard
-                            reply_text = resources.specify_deal_id
-                            tracking_data['STAGE'] = 'deal'
-                        else:
-                            tracking_data['PHONE'] = text
-                            deals_grabber(text, chat_id, tracking_data, viber)
-                            return
+                        tracking_data['PHONE'] = text
+                        deals_grabber(text, chat_id, tracking_data, viber)
+                        return
                     else:
                         reply_keyboard = addkb.SHARE_PHONE_KEYBOARD
                         reply_text = resources.phone_error
-                elif tracking_data['STAGE'] == 'deal':
-                    if len(text) == 9:
-                        deal_id = find_deal_by_title(text)
-                        if deal_id != []:
-                            tracking_data['DEAL'] = deal_id[0]
-                            add_user(tracking_data['PHONE'],
-                                     chat_id,
-                                     tracking_data['DEAL'],
-                                     tracking_data['NAME'])
-                            reply_keyboard = kb.menu_keyboard
-                            reply_text = resources.menu_message
-                            tracking_data['STAGE'] = 'menu'
-                        else:
-                            tracking_data['CHAT_MODE'] = 'on'
-                            operator_connection(chat_id, tracking_data)
-                            reply_keyboard = kb.end_chat_keyboard
-                            reply_text = resources.operator_message
-                            tracking_data['HISTORY'] = ''
-                    else:
-                        reply_keyboard = kb.operator_keyboard
-                        reply_text = resources.deal_error
                 elif tracking_data['STAGE'] == 'menu':
-                    reply_keyboard = kb.menu_keyboard
+                    if check_open_deals(tracking_data['DEALS']):
+                        reply_keyboard = kb.menu_keyboard
+                    else:
+                        reply_keyboard = kb.part_menu_keyboard
                     reply_text = resources.menu_message
                     try:
                         open(f'media/{chat_id}/history.txt', 'w').close()
@@ -374,8 +368,8 @@ def user_message_handler(viber, viber_request):
                     reply_keyboard = kb.operator_keyboard
                     reply_text = resources.not_photo_error_message
                 elif tracking_data['STAGE'] == 'rozetka':
+                    title = ''
                     if 'rozetka.com.ua' in text:
-                        title = ''
                         try:
                             parsing_result = get_product_title(text)
                             title = str(parsing_result[0]) + '\n'
@@ -384,10 +378,17 @@ def user_message_handler(viber, viber_request):
                                              parsing_result[1])
                         except Exception as e:
                             logger.info(e)
-                    reply_keyboard = kb.operator_keyboard
-                    reply_text = title + resources.wait_for_operator
+                    if title:
+                        reply_keyboard = kb.parsing_keyboard
+                        reply_text = title + resources.wait_for_operator
+                    else:
+                        reply_keyboard = kb.parsing_error_keyboard
+                        reply_text = resources.rozetka_link_error
                 else:
-                    reply_keyboard = kb.menu_keyboard
+                    if check_open_deals(tracking_data['DEALS']):
+                        reply_keyboard = kb.menu_keyboard
+                    else:
+                        reply_keyboard = kb.part_menu_keyboard
                     reply_text = resources.menu_message
                     tracking_data['STAGE'] = 'menu'
             save_message_to_history(reply_text, 'bot', chat_id)

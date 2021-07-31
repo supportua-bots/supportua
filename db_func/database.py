@@ -98,12 +98,12 @@ def get_all_tasks():
     return tasks
 
 
-@logger.catch
-def task_active(user_id):
-    sql_selection = f"SELECT * FROM TASKS WHERE "\
-                        f"user_id = '{user_id}';"
-    post_sql_query(sql_selection)
-    return bool(post_sql_query(sql_selection))
+# @logger.catch
+# def task_active(user_id):
+#     sql_selection = f"SELECT * FROM TASKS WHERE "\
+#                         f"user_id = '{user_id}';"
+#     post_sql_query(sql_selection)
+#     return bool(post_sql_query(sql_selection))
 
 
 @logger.catch

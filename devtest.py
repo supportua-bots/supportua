@@ -6,6 +6,6 @@ from bitrix import crm_tools
 # print(conn.getresponse().read())
 
 if __name__ == '__main__':
-    chat_id = '+XS2XxGhTunlRnOPpEl2NQ=='
-    tracking_data = {'PHONE': 1111111111}
-    crm_tools.send_to_erp(tracking_data, chat_id)
+    deals = ['24975', '24963', '22813']
+    if crm_tools.check_open_deals(deals):
+        print('Luck')

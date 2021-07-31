@@ -144,6 +144,23 @@ def get_link_by_id(id):
 
 
 @logger.catch
+def check_open_deals(deals):
+    MAIN_URL = 'https://supportua.bitrix24.ua/rest/2067/1syhxe0qhy432py0/crm.deal.get.json?'
+    DEAL_STATUSES = ['ON_HOLD', 'WON', 'LOSE']
+    for id in deals:
+        fields = {'id': id}
+        url = MAIN_URL + urlencode(fields, doseq=True)
+        x = requests.get(url)
+        if 'result' in x.json():
+            result = x.json()['result']['STAGE_ID']
+            if result not in DEAL_STATUSES:
+                logger.info(id)
+                logger.info(result)
+                return id
+    return None
+
+
+@logger.catch
 def send_model_field(deal_id, item_name, category):
     MAIN_URL = 'https://supportua.bitrix24.ua/rest/2067/zgbq9h1f38vnszm2/crm.deal.update.json?'
     fields = {'id': deal_id,
@@ -211,10 +228,12 @@ def send_to_erp(tracking_data, chat_id):
 
 
 if __name__ == '__main__':
-    send_model_field('21085', 'Test name', 'Test category')
-    chat_id = '+XS2XxGhTunlRnOPpEl2NQ=='
-    tracking_data = {'PHONE': 1111111111}
-    send_to_erp(tracking_data, chat_id)
+    deals = ['22551', '24893', '22739']
+    check_open_deals(deals)
+    # send_model_field('21085', 'Test name', 'Test category')
+    # chat_id = '+XS2XxGhTunlRnOPpEl2NQ=='
+    # tracking_data = {'PHONE': 1111111111}
+    # send_to_erp(tracking_data, chat_id)
     # get_deal_by_id('21525')
     # deals_id = find_contact_by_phone('380982676660')
     # logger.info(deals_id)
