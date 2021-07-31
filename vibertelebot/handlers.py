@@ -11,7 +11,10 @@ from dotenv import load_dotenv
 from loguru import logger
 from datetime import date, datetime, timedelta
 from textskeyboards import texts as resources
-from vibertelebot.utils.tools import keyboard_consctructor, save_message_to_history, workdays, divide_chunks
+from vibertelebot.utils.tools import (keyboard_consctructor,
+                                      deal_keyboard_consctructor,
+                                      save_message_to_history,
+                                      workdays, divide_chunks)
 from viberbot.api.messages.text_message import TextMessage
 from viberbot.api.messages.contact_message import ContactMessage
 from viberbot.api.messages.location_message import LocationMessage
@@ -20,13 +23,12 @@ from viberbot.api.messages.picture_message import PictureMessage
 from jivochat import sender as jivochat
 from jivochat.utils import resources as jivosource
 from bitrix.crm_tools import (find_deal_by_contact, send_model_field, send_to_erp,
-                            find_deal_by_title, upload_image, get_deal_by_id, get_link_by_id,
-                            check_open_deals)
+                              find_deal_by_title, upload_image, get_deal_by_id, get_link_by_id,
+                              check_open_deals, get_deal_product)
 from db_func.database import check_phone, add_user
 from textskeyboards import viberkeyboards as kb
 from scraper.headlines import get_product_title
 from loguru import logger
-
 
 
 dotenv_path = os.path.join(Path(__file__).parent.parent, 'config/.env')
@@ -107,12 +109,13 @@ def operator_connection(chat_id, tracking_data):
                 for link in links:
                     link = link.split('@')[-1]
                     name = link.split('/')[-1]
-                    jivochat.send_photo(chat_id, tracking_data['NAME'], link, name, 'viber')
+                    jivochat.send_photo(
+                        chat_id, tracking_data['NAME'], link, name, 'viber')
     except IOError:
         logger.info("File not accessible")
     all_filenames = [i for i in glob.glob(f'media/{chat_id}/*.jpg')]
     for i in all_filenames:
-        f = open(i ,'rb')
+        f = open(i, 'rb')
         os.remove(i)
     try:
         open(f'media/{chat_id}/links.txt', 'w').close()
@@ -135,7 +138,8 @@ def user_message_handler(viber, viber_request):
     reply_alt_text = ''
     reply_rich_media = {}
     tracking_data = json.loads(tracking_data)
-    data_keys = {'NAME': 'ViberUser', 'HISTORY': '', 'CHAT_MODE': 'off', 'STAGE': 'menu', 'PHOTO_MODE': 'off', 'DEALS': ''}
+    data_keys = {'NAME': 'ViberUser', 'HISTORY': '', 'CHAT_MODE': 'off',
+                 'STAGE': 'menu', 'PHOTO_MODE': 'off', 'DEALS': ''}
     for k in data_keys:
         if k not in tracking_data:
             tracking_data[k] = data_keys[k]
@@ -150,7 +154,8 @@ def user_message_handler(viber, viber_request):
             tracking_data['STAGE'] = 'deal'
         else:
             tracking_data['PHONE'] = message.contact.phone_number
-            deals_grabber(message.contact.phone_number, chat_id, tracking_data, viber)
+            deals_grabber(message.contact.phone_number,
+                          chat_id, tracking_data, viber)
     elif isinstance(message, PictureMessage):
         response = requests.get(viber_request.message.media)
         if not os.path.exists(f'media/{chat_id}'):
@@ -177,7 +182,17 @@ def user_message_handler(viber, viber_request):
                 reply_text = resources.photo_choice_message
                 tracking_data['STAGE'] = ''
                 tracking_data['PHOTO_MODE'] == 'on'
-            elif tracking_data['STAGE'] == 'passport':
+            elif tracking_data['STAGE'] == 'passport1':
+                reply_keyboard = kb.operator_keyboard
+                reply_text = resources.passport_two_message
+                tracking_data['STAGE'] = 'passport2'
+                tracking_data['PHOTO_MODE'] == 'on'
+            elif tracking_data['STAGE'] == 'passport2':
+                reply_keyboard = kb.operator_keyboard
+                reply_text = resources.passport_three_message
+                tracking_data['STAGE'] = 'passport3'
+                tracking_data['PHOTO_MODE'] == 'on'
+            elif tracking_data['STAGE'] == 'passport3':
                 reply_keyboard = kb.operator_keyboard
                 reply_text = resources.inn_message
                 tracking_data['STAGE'] = 'inn'
@@ -189,14 +204,14 @@ def user_message_handler(viber, viber_request):
                 tracking_data['PHOTO_MODE'] == 'on'
             elif tracking_data['STAGE'] == 'warranty':
                 reply_keyboard = kb.operator_keyboard
-                reply_text = resources.pamyatka_message
-                tracking_data['STAGE'] = 'memo'
-                tracking_data['PHOTO_MODE'] == 'on'
-            elif tracking_data['STAGE'] == 'memo':
-                reply_keyboard = kb.operator_keyboard
                 reply_text = resources.condition_message
                 tracking_data['STAGE'] = 'condition'
                 tracking_data['PHOTO_MODE'] = 'off'
+            # elif tracking_data['STAGE'] == 'memo':
+            #     reply_keyboard = kb.operator_keyboard
+            #     reply_text = resources.condition_message
+            #     tracking_data['STAGE'] = 'condition'
+            #     tracking_data['PHOTO_MODE'] = 'off'
             else:
                 tracking_data['STAGE'] = ''
             save_message_to_history(reply_text, 'bot', chat_id)
@@ -258,15 +273,27 @@ def user_message_handler(viber, viber_request):
                 reply_keyboard = kb.end_chat_keyboard
                 reply_text = resources.operator_message
                 tracking_data['HISTORY'] = ''
-            elif text == 'repair':
+            elif text[:4] == 'deal':
                 reply_keyboard = kb.confirmation_keyboard
                 reply_text = resources.repair_message
+                tracking_data['BRAND'] = get_deal_product(text.split('-')[1])
+            elif text == 'repair':
+                keyboard = []
+                deals = tracking_data['DEALS'].split(',')
+                for deal in deals:
+                    item = get_deal_product(deal)
+                    if not item:
+                        item = 'Нет информации о товаре'
+                    keyboard.append([item, deal])
+                reply_text = resources.choose_product_message
+                reply_keyboard = deal_keyboard_consctructor(keyboard)
             elif text == 'rozetka':
                 reply_keyboard = kb.operator_keyboard
                 reply_text = resources.rozetka_link
                 tracking_data['STAGE'] = 'rozetka'
             elif text == 'register':
-                status = str(get_deal_by_id(check_open_deals(tracking_data['DEALS'])))
+                status = str(get_deal_by_id(
+                    check_open_deals(tracking_data['DEALS'])))
                 logger.info(status)
                 if status == '209':
                     reply_keyboard = kb.operator_keyboard
@@ -284,8 +311,8 @@ def user_message_handler(viber, viber_request):
                 tracking_data['STAGE'] = 'menu'
             elif text == 'upload':
                 reply_keyboard = kb.operator_keyboard
-                reply_text = resources.passport_message
-                tracking_data['STAGE'] = 'passport'
+                reply_text = resources.passport_one_message
+                tracking_data['STAGE'] = 'passport1'
             elif text == 'warranty':
                 reply_keyboard = kb.operator_keyboard
                 reply_text = resources.guarantee_message
@@ -321,14 +348,9 @@ def user_message_handler(viber, viber_request):
                     tracking_data['PHONE'] = text
                     reply_keyboard = kb.operator_keyboard
                     reply_text = resources.city_message
-                    tracking_data['STAGE'] = 'brand'
-                elif tracking_data['STAGE'] == 'brand':
-                    tracking_data['CITY'] = text
-                    reply_keyboard = kb.operator_keyboard
-                    reply_text = resources.brand_message
                     tracking_data['STAGE'] = 'serial'
                 elif tracking_data['STAGE'] == 'serial':
-                    tracking_data['BRAND'] = text
+                    tracking_data['CITY'] = text
                     reply_keyboard = kb.operator_keyboard
                     reply_text = resources.serial_message
                     tracking_data['STAGE'] = 'receipt'
@@ -353,15 +375,21 @@ def user_message_handler(viber, viber_request):
                 elif tracking_data['STAGE'] == 'warranty':
                     reply_keyboard = kb.operator_keyboard
                     reply_text = resources.not_photo_error_message
-                elif tracking_data['STAGE'] == 'passport':
+                elif tracking_data['STAGE'] == 'passport1':
+                    reply_keyboard = kb.operator_keyboard
+                    reply_text = resources.not_photo_error_message
+                elif tracking_data['STAGE'] == 'passport2':
+                    reply_keyboard = kb.operator_keyboard
+                    reply_text = resources.not_photo_error_message
+                elif tracking_data['STAGE'] == 'passport3':
                     reply_keyboard = kb.operator_keyboard
                     reply_text = resources.not_photo_error_message
                 elif tracking_data['STAGE'] == 'inn':
                     reply_keyboard = kb.operator_keyboard
                     reply_text = resources.not_photo_error_message
-                elif tracking_data['STAGE'] == 'memo':
-                    reply_keyboard = kb.operator_keyboard
-                    reply_text = resources.not_photo_error_message
+                # elif tracking_data['STAGE'] == 'memo':
+                #     reply_keyboard = kb.operator_keyboard
+                #     reply_text = resources.not_photo_error_message
                 elif tracking_data['STAGE'] == 'rozetka':
                     title = ''
                     if 'rozetka.com.ua' in text:

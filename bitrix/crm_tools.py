@@ -20,17 +20,17 @@ load_dotenv(dotenv_path)
 @logger.catch
 def add_to_crm(category, reason, phone, brand, serial, name, date, time):
     MAIN_URL = 'https://supportua.bitrix24.ua/rest/2067/cml51zgfaxwxwa2x/crm.deal.add.json?'
-    fields = {'fields[CATEGORY_ID]':11,
-              'fields[STAGE]':'Нове звернення',
-              'fields[UF_CRM_1620715237492]':category,
-              'fields[UF_CRM_1612445730392]':phone,
-              'fields[UF_CRM_1612436268887]':brand,
-              'fields[UF_CRM_1612436246623]':serial,
-              'fields[UF_CRM_1620715280976]':reason,
-              'fields[UF_CRM_1620726993270]':name,
-              'fields[UF_CRM_1620715319172]':date,
-              'fields[UF_CRM_1620715309625]':time,
-              'fields[ASSIGNED_BY_ID]':OWNER_ID}
+    fields = {'fields[CATEGORY_ID]': 11,
+              'fields[STAGE]': 'Нове звернення',
+              'fields[UF_CRM_1620715237492]': category,
+              'fields[UF_CRM_1612445730392]': phone,
+              'fields[UF_CRM_1612436268887]': brand,
+              'fields[UF_CRM_1612436246623]': serial,
+              'fields[UF_CRM_1620715280976]': reason,
+              'fields[UF_CRM_1620726993270]': name,
+              'fields[UF_CRM_1620715319172]': date,
+              'fields[UF_CRM_1620715309625]': time,
+              'fields[ASSIGNED_BY_ID]': OWNER_ID}
     url = MAIN_URL + urlencode(fields, doseq=True)
     x = requests.get(url)
     return x.json()['result']
@@ -39,9 +39,9 @@ def add_to_crm(category, reason, phone, brand, serial, name, date, time):
 @logger.catch
 def add_comment(deal_id, comment):
     MAIN_URL = 'https://supportua.bitrix24.ua/rest/2067/96pk71aujg4fj1r7/crm.timeline.comment.add.json?'
-    fields = {'fields[ENTITY_ID]':deal_id,
-              'fields[ENTITY_TYPE]':'deal',
-              'fields[COMMENT]':comment}
+    fields = {'fields[ENTITY_ID]': deal_id,
+              'fields[ENTITY_TYPE]': 'deal',
+              'fields[COMMENT]': comment}
     url = MAIN_URL + urlencode(fields, doseq=True)
     x = requests.get(url)
     return x.json()['result']
@@ -96,7 +96,8 @@ def find_contact_by_phone():
         if 'result' in x.json():
             for item in x.json()['result']:
                 if 'PHONE' in item:
-                    cleaned_phone = item['PHONE'][0]['VALUE'].replace('-', '').replace('+', '').replace(' ', '')
+                    cleaned_phone = item['PHONE'][0]['VALUE'].replace(
+                        '-', '').replace('+', '').replace(' ', '')
                     if cleaned_phone[0] == '0':
                         cleaned_phone = '38' + cleaned_phone
                     result.append([cleaned_phone, item['ID']])
@@ -161,6 +162,18 @@ def check_open_deals(deals):
 
 
 @logger.catch
+def get_deal_product(id):
+    MAIN_URL = 'https://supportua.bitrix24.ua/rest/2067/1syhxe0qhy432py0/crm.deal.get.json?'
+    fields = {'id': id}
+    url = MAIN_URL + urlencode(fields, doseq=True)
+    x = requests.get(url)
+    result = ''
+    if 'result' in x.json():
+        result = x.json()['result']['UF_CRM_1623160178062']
+    return result
+
+
+@logger.catch
 def send_model_field(deal_id, item_name, category):
     MAIN_URL = 'https://supportua.bitrix24.ua/rest/2067/zgbq9h1f38vnszm2/crm.deal.update.json?'
     fields = {'id': deal_id,
@@ -174,8 +187,10 @@ def send_model_field(deal_id, item_name, category):
 @logger.catch
 def send_to_erp(tracking_data, chat_id):
     MAIN_URL = 'https://demoerp.support.ua/api/v1/appeal/manage'
-    header = {'Authorization': 'Bearer $2y$10$6qgC45p616zB2zllWaiTs.fFE2syQkThx8qFOcyx1TxjO/M4LNmra'}
-    datapoints = ['NAME', 'PHONE', 'CITY', 'BRAND', 'SERIAL', 'CONDITION', 'DETAIL']
+    header = {
+        'Authorization': 'Bearer $2y$10$6qgC45p616zB2zllWaiTs.fFE2syQkThx8qFOcyx1TxjO/M4LNmra'}
+    datapoints = ['NAME', 'PHONE', 'CITY',
+                  'BRAND', 'SERIAL', 'CONDITION', 'DETAIL']
     for datapoint in datapoints:
         if datapoint not in tracking_data:
             if datapoint == 'PHONE':
@@ -215,7 +230,8 @@ def send_to_erp(tracking_data, chat_id):
                 'detail': tracking_data['DETAIL'],
                 }
     files = {}
-    items = ['passport', 'inn', 'memo', 'warranty', 'receipt']
+    items = ['passport1', 'passport2', 'passport3',
+             'inn', 'warranty', 'receipt']
     for item in items:
         try:
             file = open(f'media/{chat_id}/{item}.jpg', 'rb')

@@ -2,6 +2,7 @@ import os
 from pathlib import Path
 from dotenv import load_dotenv
 from datetime import date, datetime, timedelta
+from textskeyboards import viberkeyboards as kb
 
 
 dotenv_path = os.path.join(Path(__file__).parent.parent, 'config/.env')
@@ -36,6 +37,41 @@ def keyboard_consctructor(items: list) -> dict:
                 # "TextOpacity": 0,
         } for item in items]
     }
+    return keyboard
+
+
+def deal_keyboard_consctructor(items: list) -> dict:
+    """Pasting infromation from list of items to keyboard menu template."""
+    width = 6
+    keyboard = {
+        "DefaultHeight": False,
+        "BgColor": '#f7f9fc',
+        "Type": "keyboard",
+        "Buttons": [{
+                "Columns": width,
+                "Rows": 1,
+                "BgColor": MAIN_COLOR,
+                "BgLoop": True,
+                "ActionType": "reply",
+                "ActionBody": f'deal-{item[1]}',
+                "ReplyType": "message",
+                "Text": item[0],
+                # "TextOpacity": 0,
+        } for item in items]
+    }
+    keyboard['Buttons'].append(
+        {
+                "Columns": width,
+                "Rows": 1,
+                "BgColor": MAIN_COLOR,
+                "BgLoop": True,
+                "ActionType": "reply",
+                "ActionBody": kb.deal_keyboard[1],
+                "ReplyType": "message",
+                "Text": kb.deal_keyboard[0],
+                # "TextOpacity": 0,
+        }
+    )
     return keyboard
 
 
