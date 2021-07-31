@@ -174,6 +174,18 @@ def get_deal_product(id):
 
 
 @logger.catch
+def get_link_product(id):
+    MAIN_URL = 'https://supportua.bitrix24.ua/rest/2067/1syhxe0qhy432py0/crm.deal.get.json?'
+    fields = {'id': id}
+    url = MAIN_URL + urlencode(fields, doseq=True)
+    x = requests.get(url)
+    result = ''
+    if 'result' in x.json():
+        result = x.json()['result']['UF_CRM_1609944485620']
+    return result
+
+
+@logger.catch
 def send_model_field(deal_id, item_name, category):
     MAIN_URL = 'https://supportua.bitrix24.ua/rest/2067/zgbq9h1f38vnszm2/crm.deal.update.json?'
     fields = {'id': deal_id,
