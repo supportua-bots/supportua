@@ -290,7 +290,7 @@ def user_message_handler(viber, viber_request):
                             contact_id = check_phone(text)
                             if contact_id:
                                 logger.info(contact_id)
-                                deals = find_deal_by_contact(contact_id[0][1])
+                                deals = find_deal_by_contact(contact_id[0][0])
                                 logger.info(f'Deals: {deals}')
                                 if len(deals) == 0 or len(deals) > 1:
                                     reply_keyboard = kb.operator_keyboard
