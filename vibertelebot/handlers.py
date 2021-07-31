@@ -236,6 +236,9 @@ def user_message_handler(viber, viber_request):
                     open(f'media/{chat_id}/history.txt', 'w').close()
                 except:
                     pass
+            elif text == 'phone_share':
+                reply_keyboard = addkb.SHARE_PHONE_KEYBOARD
+                reply_text = resources.greeting_message
             elif text == 'end_chat':
                 jivochat.send_message(chat_id,
                                       tracking_data['NAME'],
@@ -287,7 +290,7 @@ def user_message_handler(viber, viber_request):
             elif text == 'continue':
                 reply_keyboard = kb.operator_keyboard
                 reply_text = resources.name_message
-                tracking_data['STAGE'] = 'contact'
+                tracking_data['STAGE'] = 'menu'
             elif text == 'upload':
                 reply_keyboard = kb.operator_keyboard
                 reply_text = resources.passport_message
