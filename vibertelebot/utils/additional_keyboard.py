@@ -16,7 +16,7 @@ SHARE_PHONE_KEYBOARD = {
     "Type": "keyboard",
     "Buttons": [
         {
-            "Columns": 6,
+            "Columns": 3,
             "Rows": 1,
             "BgColor": MAIN_COLOR,
             "BgLoop": True,
@@ -28,7 +28,7 @@ SHARE_PHONE_KEYBOARD = {
             "Image": kb.phone_keyboard[0][2]
         },
         {
-            "Columns": 6,
+            "Columns": 3,
             "Rows": 1,
             "BgColor": MAIN_COLOR,
             "BgLoop": True,
