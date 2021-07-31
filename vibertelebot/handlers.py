@@ -327,7 +327,7 @@ def user_message_handler(viber, viber_request):
             elif text == 'continue':
                 reply_keyboard = kb.operator_keyboard
                 reply_text = resources.name_message
-                tracking_data['STAGE'] = 'menu'
+                tracking_data['STAGE'] = 'contact'
             elif text == 'upload':
                 reply_keyboard = kb.operator_keyboard
                 reply_text = resources.passport_one_message
