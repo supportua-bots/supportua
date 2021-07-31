@@ -374,7 +374,8 @@ def user_message_handler(viber, viber_request):
                         try:
                             parsing_result = get_product_title(text)
                             title = str(parsing_result[0]) + '\n'
-                            send_model_field(tracking_data['DEAL'],
+                            deal = check_open_deals(tracking_data['DEALS'])
+                            send_model_field(deal,
                                              parsing_result[0],
                                              parsing_result[1])
                         except Exception as e:
