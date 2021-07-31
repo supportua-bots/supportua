@@ -1,7 +1,6 @@
 #!/bin/bash
 
 python3 /var/www/chatboto/supportua/populator.py
-python3 /var/www/chatboto/supportua/tasks.py
 MYPROG="mpbot"
 PGREP="/usr/bin/pgrep"
 $PGREP ${MYPROG}

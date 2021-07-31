@@ -34,12 +34,6 @@ def create_table():
                         deal TEXT,
                         name TEXT);'''
     post_sql_query(query)
-    query = '''CREATE TABLE IF NOT EXISTS TASKS
-                        (user_id TEXT UNIQUE,
-                        deal_id TEXT,
-                        phone TEXT);'''
-    post_sql_query(query)
-
 
 @logger.catch
 def add_user(phone, chat_id, deal, name):
@@ -78,39 +72,6 @@ def check_phone(phone):
                         f"phone = '{phone}';"
     rows = post_sql_query(sql_selection)
     return rows
-
-
-@logger.catch
-def add_task(user_id, deal_id, phone):
-    sql_selection = f"SELECT * FROM TASKS WHERE "\
-                        f"user_id = '{user_id}';"
-    rows = post_sql_query(sql_selection)
-    if not rows:
-        query = f"INSERT INTO TASKS (user_id, deal_id, phone) VALUES ('{user_id}', "\
-                f"'{deal_id}', '{phone}');"
-        post_sql_query(query)
-
-
-@logger.catch
-def get_all_tasks():
-    query = f"SELECT * FROM TASKS;"
-    tasks = post_sql_query(query)
-    return tasks
-
-
-# @logger.catch
-# def task_active(user_id):
-#     sql_selection = f"SELECT * FROM TASKS WHERE "\
-#                         f"user_id = '{user_id}';"
-#     post_sql_query(sql_selection)
-#     return bool(post_sql_query(sql_selection))
-
-
-@logger.catch
-def delete_task(user_id):
-    sql_selection = f"DELETE FROM TASKS WHERE "\
-                        f"user_id = '{user_id}';"
-    post_sql_query(sql_selection)
 
 
 @logger.catch

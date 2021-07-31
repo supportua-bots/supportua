@@ -22,7 +22,7 @@ from jivochat.utils import resources as jivosource
 from bitrix.crm_tools import (find_deal_by_contact, send_model_field, send_to_erp,
                             find_deal_by_title, upload_image, get_deal_by_id, get_link_by_id,
                             check_open_deals)
-from db_func.database import check_phone, add_task, add_user
+from db_func.database import check_phone, add_user
 from textskeyboards import viberkeyboards as kb
 from scraper.headlines import get_product_title
 from loguru import logger
@@ -265,15 +265,6 @@ def user_message_handler(viber, viber_request):
                 reply_keyboard = kb.operator_keyboard
                 reply_text = resources.rozetka_link
                 tracking_data['STAGE'] = 'rozetka'
-            elif text == 'paid':
-                add_task(chat_id, tracking_data['DEAL'], tracking_data['PHONE'])
-                answer = [TextMessage(text=resources.payment_message)]
-                viber.send_messages(chat_id, answer)
-                if check_open_deals(tracking_data['DEALS']):
-                    reply_keyboard = kb.menu_keyboard
-                else:
-                    reply_keyboard = kb.part_menu_keyboard
-                reply_text = resources.menu_message
             elif text == 'register':
                 status = str(get_deal_by_id(check_open_deals(tracking_data['DEALS'])))
                 logger.info(status)

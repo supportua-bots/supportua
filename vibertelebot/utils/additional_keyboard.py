@@ -21,11 +21,23 @@ SHARE_PHONE_KEYBOARD = {
             "BgColor": MAIN_COLOR,
             "BgLoop": True,
             "ActionType": "share-phone",
-            "ActionBody": kb.phone_keyboard[1][1],
+            "ActionBody": kb.phone_keyboard[0][1],
             "ReplyType": "message",
-            "Text": kb.phone_keyboard[1][0],
+            "Text": kb.phone_keyboard[0][0],
             # "TextOpacity": 0,
-            "Image": kb.phone_keyboard[1][2]
+            "Image": kb.phone_keyboard[0][2]
+        },
+        {
+            "Columns": 6,
+            "Rows": 1,
+            "BgColor": MAIN_COLOR,
+            "BgLoop": True,
+            "ActionType": "share-phone",
+            "ActionBody": kb.phone_keyboard[0][1],
+            "ReplyType": "message",
+            "Text": kb.phone_keyboard[0][0],
+            # "TextOpacity": 0,
+            "Image": kb.phone_keyboard[0][2]
         },
     ]
 }
