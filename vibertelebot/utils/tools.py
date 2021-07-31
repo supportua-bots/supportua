@@ -2,7 +2,7 @@ import os
 from pathlib import Path
 from dotenv import load_dotenv
 from datetime import date, datetime, timedelta
-from textskeyboards import viberkeyboards as kb
+import vibertelebot.utils.additional_keyboard as addkb
 
 
 dotenv_path = os.path.join(Path(__file__).parent.parent, 'config/.env')
@@ -59,19 +59,7 @@ def deal_keyboard_consctructor(items: list) -> dict:
                 # "TextOpacity": 0,
         } for item in items]
     }
-    keyboard['Buttons'].append(
-        {
-                "Columns": width,
-                "Rows": 1,
-                "BgColor": MAIN_COLOR,
-                "BgLoop": True,
-                "ActionType": "reply",
-                "ActionBody": kb.deal_keyboard[1],
-                "ReplyType": "message",
-                "Text": kb.deal_keyboard[0],
-                # "TextOpacity": 0,
-        }
-    )
+    keyboard['Buttons'].append(addkb.MENU_BUTTON)
     return keyboard
 
 

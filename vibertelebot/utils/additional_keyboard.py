@@ -41,3 +41,16 @@ SHARE_PHONE_KEYBOARD = {
         },
     ]
 }
+
+
+MENU_BUTTON = {
+        "Columns": 6,
+        "Rows": 1,
+        "BgColor": MAIN_COLOR,
+        "BgLoop": True,
+        "ActionType": "reply",
+        "ActionBody": kb.deal_keyboard[1],
+        "ReplyType": "message",
+        "Text": kb.deal_keyboard[0],
+        # "TextOpacity": 0,
+}
