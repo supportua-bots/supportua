@@ -62,6 +62,31 @@ def send_photo(user_id, name, file, filename, source):
 
 
 @logger.catch
+def send_video(user_id, name, file, filename, source):
+    if source == 'telegram':
+        URL = TELEGRAM_URL
+    else:
+        URL = VIBER_URL
+    input = {
+        "sender" :
+            {
+            "id": str(user_id),
+            "name": f'{name} [{user_id}]',
+            },
+            "message":
+            {
+            "type": "video",
+            "file": file,
+            "file_name": filename
+            }
+    }
+    logger.info(input)
+    x = requests.post(URL,
+                      json=input,
+                      headers={'content-type':'application/json'})
+
+
+@logger.catch
 def send_document(user_id, name, file, filename, source):
     if source == 'telegram':
         URL = TELEGRAM_URL

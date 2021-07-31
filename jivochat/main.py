@@ -82,7 +82,7 @@ def main(data, source):
                              'CHAT_MODE': 'on',
                              'STAGE': 'menu',
                              'PHOTO_MODE': 'off',
-                             'DEAL': deal,
+                             'DEALS': deal,
                              'PHONE': phone}
             tracking_data = json.dumps(tracking_data)
             keyboard = [('Завершити чат', 'end_chat')]
@@ -109,7 +109,7 @@ def main(data, source):
                          'CHAT_MODE': 'on',
                          'STAGE': 'menu',
                          'PHOTO_MODE': 'off',
-                         'DEAL': deal,
+                         'DEALS': deal,
                          'PHONE': phone}
         tracking_data = json.dumps(tracking_data)
         if data['event_name'] == 'chat_accepted':
