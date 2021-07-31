@@ -60,7 +60,7 @@ def deals_grabber(phone, chat_id, tracking_data, viber):
                      chat_id,
                      text_deals,
                      tracking_data['NAME'])
-            if check_open_deals(deals):
+            if check_open_deals(text_deals):
                 reply_keyboard = kb.menu_keyboard
             else:
                 reply_keyboard = kb.part_menu_keyboard
@@ -72,7 +72,7 @@ def deals_grabber(phone, chat_id, tracking_data, viber):
                      chat_id,
                      deals[0],
                      tracking_data['NAME'])
-            if check_open_deals(deals):
+            if check_open_deals(deals[0]):
                 reply_keyboard = kb.menu_keyboard
             else:
                 reply_keyboard = kb.part_menu_keyboard
