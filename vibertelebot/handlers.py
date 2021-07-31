@@ -22,7 +22,7 @@ from jivochat.utils import resources as jivosource
 from bitrix.crm_tools import (find_deal_by_contact, send_model_field, send_to_erp,
                             find_deal_by_title, upload_image, get_deal_by_id, get_link_by_id,
                             check_open_deals)
-from db_func.database import check_phone, add_task, task_active, add_user
+from db_func.database import check_phone, add_task, add_user
 from textskeyboards import viberkeyboards as kb
 from scraper.headlines import get_product_title
 from loguru import logger
