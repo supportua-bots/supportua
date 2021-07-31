@@ -291,14 +291,15 @@ def user_message_handler(viber, viber_request):
                         else:
                             valid_link = product_link.split(',')[0]
                             logger.info(f"Valid: {valid_link}")
-                            if 'rozetka.com.ua' in text:
+                            if 'rozetka.com.ua' in valid_link:
                                 try:
                                     parsing_result = get_product_title(
                                         valid_link)
-                                    logger.info(f"Parsing: {str(parsing_result)}")
+                                    logger.info(
+                                        f"Parsing: {str(parsing_result)}")
                                     item = str(parsing_result[0])
                                 except Exception as e:
-                                    item = 'Нет информации о товаре.'
+                                    item = 'Нет информации о товаре'
                                     logger.info(e)
                     keyboard.append([item, deal])
                 reply_text = resources.choose_product_message
