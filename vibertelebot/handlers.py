@@ -282,16 +282,20 @@ def user_message_handler(viber, viber_request):
                 deals = tracking_data['DEALS'].split(',')
                 for deal in deals:
                     item = get_deal_product(deal)
+                    logger.info(f"Title: {item}")
                     if not item:
                         product_link = get_link_product(deal)
+                        logger.info(f"Link: {product_link}")
                         if not product_link:
                             item = 'Нет информации о товаре.'
                         else:
                             valid_link = product_link.split(',')[0]
+                            logger.info(f"Valid: {valid_link}")
                             if 'rozetka.com.ua' in text:
                                 try:
                                     parsing_result = get_product_title(
                                         valid_link)
+                                    logger.info(f"Parsing: {str(parsing_result)}")
                                     item = str(parsing_result[0])
                                 except Exception as e:
                                     item = 'Нет информации о товаре.'
