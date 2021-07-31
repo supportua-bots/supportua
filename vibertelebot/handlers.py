@@ -276,7 +276,9 @@ def user_message_handler(viber, viber_request):
             elif text[:4] == 'deal':
                 reply_keyboard = kb.confirmation_keyboard
                 reply_text = resources.repair_message
-                tracking_data['BRAND'] = get_deal_product(text.split('-')[1])
+                deal_id = text.split('-')[1]
+                product = get_deal_product(deal_id)
+                tracking_data['BRAND'] = product
             elif text == 'repair':
                 keyboard = []
                 deals = tracking_data['DEALS'].split(',')
