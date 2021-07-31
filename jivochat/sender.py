@@ -30,6 +30,7 @@ def send_message(user_id, name, text, source):
             "text": str(text)
             }
     }
+    logger.info(input)
     x = requests.post(URL,
                       json=input,
                       headers={'content-type':'application/json'})
@@ -54,6 +55,7 @@ def send_photo(user_id, name, file, filename, source):
             "file_name": filename
             }
     }
+    logger.info(input)
     x = requests.post(URL,
                       json=input,
                       headers={'content-type':'application/json'})
@@ -78,6 +80,7 @@ def send_document(user_id, name, file, filename, source):
             "file_name": name
             }
     }
+    logger.info(input)
     x = requests.post(URL,
                       json=input,
                       headers={'content-type':'application/json'})
