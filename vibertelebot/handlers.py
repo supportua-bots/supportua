@@ -65,13 +65,14 @@ def deals_grabber(phone, chat_id, tracking_data, viber):
             else:
                 reply_keyboard = kb.part_menu_keyboard
             reply_text = resources.menu_message
+            tracking_data['DEALS'] = text_deals
             tracking_data['STAGE'] = 'menu'
         else:
             add_user(tracking_data['PHONE'],
                      chat_id,
                      deals[0],
                      tracking_data['NAME'])
-            if check_open_deals(tracking_data['DEALS']):
+            if check_open_deals(deals):
                 reply_keyboard = kb.menu_keyboard
             else:
                 reply_keyboard = kb.part_menu_keyboard

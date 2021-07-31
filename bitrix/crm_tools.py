@@ -147,7 +147,7 @@ def get_link_by_id(id):
 def check_open_deals(deals):
     MAIN_URL = 'https://supportua.bitrix24.ua/rest/2067/1syhxe0qhy432py0/crm.deal.get.json?'
     DEAL_STATUSES = ['ON_HOLD', 'WON', 'LOSE']
-    for id in deals:
+    for id in deals.split(','):
         fields = {'id': id}
         url = MAIN_URL + urlencode(fields, doseq=True)
         x = requests.get(url)
