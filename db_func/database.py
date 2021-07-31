@@ -30,7 +30,7 @@ def create_table():
     query = '''CREATE TABLE IF NOT EXISTS DATA
                         (user_id TEXT,
                         phone TEXT,
-                        chat_id TEXT,
+                        chat_id TEXT UNIQUE,
                         deal TEXT,
                         name TEXT);'''
     post_sql_query(query)
@@ -44,7 +44,7 @@ def create_table():
 @logger.catch
 def add_user(phone, chat_id, deal, name):
     sql_selection = f"SELECT * FROM DATA WHERE "\
-                        f"phone = '{phone}';"
+                        f"chat_id = '{chat_id}';"
     rows = post_sql_query(sql_selection)
     if not rows:
         query = f"INSERT INTO DATA (phone, chat_id, deal, name) VALUES ('{phone}', "\

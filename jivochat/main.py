@@ -40,9 +40,9 @@ def main(data, source):
             user_info  = check_user(user)
             logger.info(user_info)
             if user_info:
-                username = user_info[4]
-                phone = user_info[1]
-                deal = user_info[3]
+                username = user_info[0][4]
+                phone = user_info[0][1]
+                deal = user_info[0][3]
             else:
                 username = 'ViberUser'
                 phone = ''
@@ -68,9 +68,9 @@ def main(data, source):
             user_info  = check_user(user)
             logger.info(user_info)
             if user_info:
-                username = user_info[4]
-                phone = user_info[1]
-                deal = user_info[3]
+                username = user_info[0][4]
+                phone = user_info[0][1]
+                deal = user_info[0][3]
             else:
                 username = 'ViberUser'
                 phone = ''
@@ -95,9 +95,9 @@ def main(data, source):
         user_id = str(re.findall(f'\[(.*?)\]', data['visitor']['name'])[0])
         user_info  = check_user(user_id)
         if user_info:
-            username = user_info[4]
-            phone = user_info[1]
-            deal = user_info[3]
+            username = user_info[0][4]
+            phone = user_info[0][1]
+            deal = user_info[0][3]
         else:
             username = 'ViberUser'
             phone = ''
