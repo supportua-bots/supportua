@@ -30,14 +30,14 @@ load_dotenv(dotenv_path)
 
 TOKEN = os.getenv("TOKEN")
 
-bot = Bot(token=os.getenv("TOKEN"))
+# bot = Bot(token=os.getenv("TOKEN"))
 
 
 def main(data, source):
     if 'event_name' not in data:
         if data['message']['type'] == 'text':
             user = data['recipient']['id']
-            user_info  = check_user(user)
+            user_info = check_user(user)
             logger.info(user_info)
             if user_info:
                 username = user_info[0][4]
@@ -62,10 +62,10 @@ def main(data, source):
             reply_keyboard = keyboard_consctructor(keyboard)
             viber.send_messages(user, [TextMessage(text=text,
                                                    keyboard=reply_keyboard,
-                                                    tracking_data=tracking_data)])
+                                                   tracking_data=tracking_data)])
         if data['message']['type'] == 'photo':
             user = data['recipient']['id']
-            user_info  = check_user(user)
+            user_info = check_user(user)
             logger.info(user_info)
             if user_info:
                 username = user_info[0][4]
@@ -88,12 +88,12 @@ def main(data, source):
             keyboard = [('Завершити чат', 'end_chat')]
             reply_keyboard = keyboard_consctructor(keyboard)
             viber.send_messages(user, [PictureMessage(text='',
-                                                    keyboard=reply_keyboard,
-                                                    tracking_data=tracking_data,
-                                                    media=link)])
+                                                      keyboard=reply_keyboard,
+                                                      tracking_data=tracking_data,
+                                                      media=link)])
     else:
         user_id = str(re.findall(f'\[(.*?)\]', data['visitor']['name'])[0])
-        user_info  = check_user(user_id)
+        user_info = check_user(user_id)
         if user_info:
             username = user_info[0][4]
             phone = user_info[0][1]
@@ -116,14 +116,15 @@ def main(data, source):
             keyboard = [('Завершити чат', 'end_chat')]
             reply_keyboard = keyboard_consctructor(keyboard)
             viber.send_messages(user_id, [TextMessage(text=resources.operator_connected,
-                                                   keyboard=reply_keyboard,
-                                                    tracking_data=tracking_data)])
+                                                      keyboard=reply_keyboard,
+                                                      tracking_data=tracking_data)])
         if data['event_name'] == 'chat_finished':
             if resources.user_ended_chat not in str(data['plain_messages']):
-                viber.send_messages(user_id, [TextMessage(text=resources.operator_ended_chat)])
+                viber.send_messages(user_id, [TextMessage(
+                    text=resources.operator_ended_chat)])
                 time.sleep(1)
                 viber.send_messages(user_id, [TextMessage(text=resources.menu_message,
-                                                       keyboard=kb.menu_keyboard,
-                                                        tracking_data=tracking_data)])
+                                                          keyboard=kb.menu_keyboard,
+                                                          tracking_data=tracking_data)])
     returned_data = {'result': 'ok'}
     return returned_data
