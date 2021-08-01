@@ -158,12 +158,10 @@ def user_message_handler(viber, viber_request):
             deals_grabber(message.contact.phone_number,
                           chat_id, tracking_data, viber)
     elif isinstance(message, VideoMessage):
-        payload = json.loads(jsonpickle.encode(viber_request.message))
-        if 'media' in payload:
-            jivochat.send_video(chat_id, tracking_data['NAME'],
-                                viber_request.message.media,
-                                viber_request.message_token,
-                                'viber')
+        jivochat.send_video(chat_id, tracking_data['NAME'],
+                            viber_request.message.media,
+                            viber_request.message_token,
+                            'viber')
     elif isinstance(message, PictureMessage):
         response = requests.get(viber_request.message.media)
         if not os.path.exists(f'media/{chat_id}'):
