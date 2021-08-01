@@ -73,10 +73,15 @@ def send_video(user_id, name, file, filename, source):
     else:
         URL = VIBER_URL
         message = {
-            "type": "text",
-            "id": "customer_message_id",
-            "text": str(file)
+            "type": "video",
+            "file": file,
+            "file_name": filename
         }
+        # message = {
+        #     "type": "text",
+        #     "id": "customer_message_id",
+        #     "text": str(file)
+        # }
     input = {
         "sender":
             {
