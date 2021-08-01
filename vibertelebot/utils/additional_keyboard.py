@@ -20,7 +20,7 @@ SHARE_PHONE_KEYBOARD = {
             "Rows": 1,
             "BgColor": MAIN_COLOR,
             "BgLoop": True,
-            "ActionType": "share-phone",
+            "ActionType": "reply",
             "ActionBody": kb.phone_keyboard[0][1],
             "ReplyType": "message",
             "Text": kb.phone_keyboard[0][0],
