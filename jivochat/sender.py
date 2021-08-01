@@ -18,22 +18,22 @@ def send_message(user_id, name, text, source):
     else:
         URL = VIBER_URL
     input = {
-        "sender" :
+        "sender":
             {
-            "id": str(user_id),
-            "name": f'{name} [{user_id}]',
+                "id": str(user_id),
+                "name": f'{name} [{user_id}]',
             },
             "message":
             {
-            "type": "text",
-            "id": "customer_message_id",
-            "text": str(text)
+                "type": "text",
+                "id": "customer_message_id",
+                "text": str(text)
             }
     }
     logger.info(input)
     x = requests.post(URL,
                       json=input,
-                      headers={'content-type':'application/json'})
+                      headers={'content-type': 'application/json'})
 
 
 @logger.catch
@@ -43,47 +43,52 @@ def send_photo(user_id, name, file, filename, source):
     else:
         URL = VIBER_URL
     input = {
-        "sender" :
+        "sender":
             {
-            "id": str(user_id),
-            "name": f'{name} [{user_id}]',
+                "id": str(user_id),
+                "name": f'{name} [{user_id}]',
             },
             "message":
             {
-            "type": "photo",
-            "file": file,
-            "file_name": filename
+                "type": "photo",
+                "file": file,
+                "file_name": filename
             }
     }
     logger.info(input)
     x = requests.post(URL,
                       json=input,
-                      headers={'content-type':'application/json'})
+                      headers={'content-type': 'application/json'})
 
 
 @logger.catch
 def send_video(user_id, name, file, filename, source):
     if source == 'telegram':
         URL = TELEGRAM_URL
-    else:
-        URL = VIBER_URL
-    input = {
-        "sender" :
-            {
-            "id": str(user_id),
-            "name": f'{name} [{user_id}]',
-            },
-            "message":
-            {
+        message = {
             "type": "video",
             "file": file,
             "file_name": filename
-            }
+        }
+    else:
+        URL = VIBER_URL
+        message = {
+            "type": "text",
+            "id": "customer_message_id",
+            "text": str(file)
+        }
+    input = {
+        "sender":
+            {
+                "id": str(user_id),
+                "name": f'{name} [{user_id}]',
+            },
+            "message": message
     }
     logger.info(input)
     x = requests.post(URL,
                       json=input,
-                      headers={'content-type':'application/json'})
+                      headers={'content-type': 'application/json'})
 
 
 @logger.catch
@@ -93,19 +98,19 @@ def send_document(user_id, name, file, filename, source):
     else:
         URL = VIBER_URL
     input = {
-        "sender" :
+        "sender":
             {
-            "id": user_id,
-            "name": f'{name} [{user_id}]',
+                "id": user_id,
+                "name": f'{name} [{user_id}]',
             },
             "message":
             {
-            "type": "document",
-            "file": file,
-            "file_name": name
+                "type": "document",
+                "file": file,
+                "file_name": name
             }
     }
     logger.info(input)
     x = requests.post(URL,
                       json=input,
-                      headers={'content-type':'application/json'})
+                      headers={'content-type': 'application/json'})
