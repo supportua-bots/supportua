@@ -7,5 +7,5 @@ $PGREP ${MYPROG}
 if [ $? -ne 0 ]
 then
     source "/var/www/chatboto/.pyenv/versions/3.8.5/envs/env/bin/activate"
-    waitress-serve --port=5000 app:app &
+    nohup waitress-serve --port=5000 app:app
 fi
