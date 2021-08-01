@@ -5,6 +5,7 @@ from jivochat import main as jivo
 from vibertelebot import main as vbbot
 from db_func.database import create_table
 from loguru import logger
+from waitress import serve
 
 
 app = Flask(__name__)
@@ -32,13 +33,10 @@ def viber_endpoint():
 
 
 def server_launch():
-    app.run(host='0.0.0.0', port=5000)
+    app.run(host='0.0.0.0')
+    serve(app, host='0.0.0.0', port=5000)
 
 
 if __name__ == '__main__':
-    try:
-        create_table()
-        flask_server = Process(target=server_launch).start()
-    except KeyboardInterrupt:
-        flask_server.terminate()
-        flask_server.join()
+    create_table()
+    server_launch()
