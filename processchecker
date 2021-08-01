@@ -7,5 +7,5 @@ $PGREP ${MYPROG}
 if [ $? -ne 0 ]
 then
     source "/var/www/chatboto/.pyenv/versions/3.8.5/envs/env/bin/activate"
-    bash -c "exec -a mpbot /var/www/chatboto/.pyenv/versions/3.8.5/envs/env/bin/uwsgi --socket 0.0.0.0:5000 --protocol=http app:app &"
+    bash -c "exec -a mpbot /var/www/chatboto/.pyenv/versions/3.8.5/envs/env/bin/uwsgi --socket 0.0.0.0:5000 --protocol=http -w app:app &"
 fi
