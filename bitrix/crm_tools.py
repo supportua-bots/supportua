@@ -242,7 +242,7 @@ def send_to_erp(tracking_data, chat_id):
                 'detail': tracking_data['DETAIL'],
                 }
     files = {}
-    items = ['passport1', 'passport2', 'passport3',
+    items = ['passport1', 'passport2', 'passport11',
              'inn', 'warranty', 'receipt']
     for item in items:
         try:

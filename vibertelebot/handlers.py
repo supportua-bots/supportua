@@ -20,6 +20,7 @@ from viberbot.api.messages.contact_message import ContactMessage
 from viberbot.api.messages.location_message import LocationMessage
 from viberbot.api.messages.rich_media_message import RichMediaMessage
 from viberbot.api.messages.picture_message import PictureMessage
+from viberbot.api.messages.video_message import VideoMessage
 from jivochat import sender as jivochat
 from jivochat.utils import resources as jivosource
 from bitrix.crm_tools import (find_deal_by_contact, send_model_field, send_to_erp,
@@ -156,6 +157,13 @@ def user_message_handler(viber, viber_request):
             tracking_data['PHONE'] = message.contact.phone_number
             deals_grabber(message.contact.phone_number,
                           chat_id, tracking_data, viber)
+    elif isinstance(message, VideoMessage):
+        payload = json.loads(jsonpickle.encode(viber_request.message))
+        if 'media' in payload:
+            jivochat.send_video(chat_id, tracking_data['NAME'],
+                                viber_request.message.media,
+                                viber_request.message_token,
+                                'viber')
     elif isinstance(message, PictureMessage):
         response = requests.get(viber_request.message.media)
         if not os.path.exists(f'media/{chat_id}'):
@@ -189,10 +197,10 @@ def user_message_handler(viber, viber_request):
                 tracking_data['PHOTO_MODE'] == 'on'
             elif tracking_data['STAGE'] == 'passport2':
                 reply_keyboard = kb.operator_keyboard
-                reply_text = resources.passport_three_message
-                tracking_data['STAGE'] = 'passport3'
+                reply_text = resources.passport_eleven_message
+                tracking_data['STAGE'] = 'passport11'
                 tracking_data['PHOTO_MODE'] == 'on'
-            elif tracking_data['STAGE'] == 'passport3':
+            elif tracking_data['STAGE'] == 'passport11':
                 reply_keyboard = kb.operator_keyboard
                 reply_text = resources.inn_message
                 tracking_data['STAGE'] = 'inn'
@@ -400,7 +408,7 @@ def user_message_handler(viber, viber_request):
                 elif tracking_data['STAGE'] == 'passport2':
                     reply_keyboard = kb.operator_keyboard
                     reply_text = resources.not_photo_error_message
-                elif tracking_data['STAGE'] == 'passport3':
+                elif tracking_data['STAGE'] == 'passport11':
                     reply_keyboard = kb.operator_keyboard
                     reply_text = resources.not_photo_error_message
                 elif tracking_data['STAGE'] == 'inn':
