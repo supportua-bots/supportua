@@ -184,30 +184,30 @@ def user_message_handler(viber, viber_request):
             file_links.write(f'{tracking_data["STAGE"]}@{link},')
             file_links.close()
             if tracking_data['STAGE'] == 'receipt':
-                reply_keyboard = kb.photo_keyboard
-                reply_text = resources.photo_choice_message
-                tracking_data['STAGE'] = ''
-                tracking_data['PHOTO_MODE'] == 'on'
-            elif tracking_data['STAGE'] == 'passport1':
-                reply_keyboard = kb.operator_keyboard
-                reply_text = resources.passport_two_message
-                tracking_data['STAGE'] = 'passport2'
-                tracking_data['PHOTO_MODE'] == 'on'
-            elif tracking_data['STAGE'] == 'passport2':
-                reply_keyboard = kb.operator_keyboard
-                reply_text = resources.passport_eleven_message
-                tracking_data['STAGE'] = 'passport11'
-                tracking_data['PHOTO_MODE'] == 'on'
-            elif tracking_data['STAGE'] == 'passport11':
-                reply_keyboard = kb.operator_keyboard
-                reply_text = resources.inn_message
-                tracking_data['STAGE'] = 'inn'
-                tracking_data['PHOTO_MODE'] == 'on'
-            elif tracking_data['STAGE'] == 'inn':
                 reply_keyboard = kb.operator_keyboard
                 reply_text = resources.guarantee_message
                 tracking_data['STAGE'] = 'warranty'
                 tracking_data['PHOTO_MODE'] == 'on'
+            # elif tracking_data['STAGE'] == 'passport1':
+            #     reply_keyboard = kb.operator_keyboard
+            #     reply_text = resources.passport_two_message
+            #     tracking_data['STAGE'] = 'passport2'
+            #     tracking_data['PHOTO_MODE'] == 'on'
+            # elif tracking_data['STAGE'] == 'passport2':
+            #     reply_keyboard = kb.operator_keyboard
+            #     reply_text = resources.passport_eleven_message
+            #     tracking_data['STAGE'] = 'passport11'
+            #     tracking_data['PHOTO_MODE'] == 'on'
+            # elif tracking_data['STAGE'] == 'passport11':
+            #     reply_keyboard = kb.operator_keyboard
+            #     reply_text = resources.inn_message
+            #     tracking_data['STAGE'] = 'inn'
+            #     tracking_data['PHOTO_MODE'] == 'on'
+            # elif tracking_data['STAGE'] == 'inn':
+            #     reply_keyboard = kb.operator_keyboard
+            #     reply_text = resources.guarantee_message
+            #     tracking_data['STAGE'] = 'warranty'
+            #     tracking_data['PHOTO_MODE'] == 'on'
             elif tracking_data['STAGE'] == 'warranty':
                 reply_keyboard = kb.operator_keyboard
                 reply_text = resources.condition_message
@@ -334,14 +334,14 @@ def user_message_handler(viber, viber_request):
                 reply_keyboard = kb.operator_keyboard
                 reply_text = resources.name_message
                 tracking_data['STAGE'] = 'contact'
-            elif text == 'upload':
-                reply_keyboard = kb.operator_keyboard
-                reply_text = resources.passport_one_message
-                tracking_data['STAGE'] = 'passport1'
-            elif text == 'warranty':
-                reply_keyboard = kb.operator_keyboard
-                reply_text = resources.guarantee_message
-                tracking_data['STAGE'] = 'warranty'
+            # elif text == 'upload':
+            #     reply_keyboard = kb.operator_keyboard
+            #     reply_text = resources.guarantee_message
+            #     tracking_data['STAGE'] = 'warranty'
+            # elif text == 'warranty':
+            #     reply_keyboard = kb.operator_keyboard
+            #     reply_text = resources.guarantee_message
+            #     tracking_data['STAGE'] = 'warranty'
             else:
                 if tracking_data['STAGE'] == 'phone':
                     if text[:3] == '380' and len(text) == 12:

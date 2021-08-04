@@ -242,8 +242,7 @@ def send_to_erp(tracking_data, chat_id):
                 'detail': tracking_data['DETAIL'],
                 }
     files = {}
-    items = ['passport1', 'passport2', 'passport11',
-             'inn', 'warranty', 'receipt']
+    items = ['warranty', 'receipt']
     for item in items:
         try:
             file = open(f'media/{chat_id}/{item}.jpg', 'rb')
