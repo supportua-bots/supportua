@@ -430,6 +430,7 @@ def user_message_handler(viber, viber_request):
                     if title:
                         reply_keyboard = kb.parsing_keyboard
                         reply_text = title + resources.wait_for_operator
+                        tracking_data['STAGE'] = 'menu'
                     else:
                         reply_keyboard = kb.parsing_error_keyboard
                         reply_text = resources.rozetka_link_error
