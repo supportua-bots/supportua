@@ -1,11 +1,20 @@
+import schedule
+import time
 from db_func.database import input_new_users, create_table
 from bitrix.crm_tools import find_contact_by_phone
 from loguru import logger
 
 
-if __name__ == '__main__':
+@logger.catch
+def launch():
     create_table()
-    contacts = find_contact_by_phone()
-    new_users = input_new_users(contacts)
-    logger.info(f'{len(new_users)} new contacts added.')
-    logger.info(new_users)
+    while 1:
+        contacts = find_contact_by_phone()
+        new_users = input_new_users(contacts)
+        logger.info(f'{len(new_users)} new contacts added.')
+        logger.info(new_users)
+        time.sleep(300)
+
+
+if __name__ == '__main__':
+    launch()

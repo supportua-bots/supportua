@@ -19,7 +19,8 @@ def post_sql_query(sql_query):
             logger.info("Exception class is: ", er.__class__)
             logger.info('SQLite traceback: ')
             exc_type, exc_value, exc_tb = sys.exc_info()
-            logger.info(traceback.format_exception(exc_type, exc_value, exc_tb))
+            logger.info(traceback.format_exception(
+                exc_type, exc_value, exc_tb))
             pass
         result = cursor.fetchall()
         return result
@@ -34,6 +35,14 @@ def create_table():
                         deal TEXT,
                         name TEXT);'''
     post_sql_query(query)
+    query = '''CREATE TABLE IF NOT EXISTS TASKS
+                        (chat_id TEXT UNIQUE,
+                        user_id TEXT,
+                        deal_id TEXT,
+                        phone TEXT,
+                        checks TEXT);'''
+    post_sql_query(query)
+
 
 @logger.catch
 def add_user(phone, chat_id, deal, name):
@@ -80,3 +89,36 @@ def check_user(chat_id):
                         f"chat_id = '{chat_id}';"
     rows = post_sql_query(sql_selection)
     return rows
+
+
+@logger.catch
+def add_task(chat_id, deal_id, phone):
+    sql_selection = f"SELECT * FROM TASKS WHERE "\
+                        f"chat_id = '{chat_id}';"
+    rows = post_sql_query(sql_selection)
+    if not rows:
+        query = f"INSERT INTO TASKS (chat_id, deal_id, phone, checks) VALUES ('{chat_id}', "\
+                f"'{deal_id}', '{phone}', '0');"
+        post_sql_query(query)
+
+
+@logger.catch
+def get_all_tasks():
+    query = f"SELECT * FROM TASKS;"
+    tasks = post_sql_query(query)
+    return tasks
+
+
+# @logger.catch
+# def task_active(user_id):
+#     sql_selection = f"SELECT * FROM TASKS WHERE "\
+#                         f"user_id = '{user_id}';"
+#     post_sql_query(sql_selection)
+#     return bool(post_sql_query(sql_selection))
+
+
+@logger.catch
+def delete_task(chat_id):
+    sql_selection = f"DELETE FROM TASKS WHERE "\
+                        f"chat_id = '{chat_id}';"
+    post_sql_query(sql_selection)

@@ -1,6 +1,5 @@
 #!/bin/bash
 
-python3 /var/www/chatboto/supportua/populator.py
 MYPROG="waitress"
 PGREP="/usr/bin/pgrep"
 $PGREP ${MYPROG}

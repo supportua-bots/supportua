@@ -3,6 +3,7 @@ from multiprocessing import Process
 # from telegrambot import main as tgbot
 from jivochat import main as jivo
 from vibertelebot import main as vbbot
+from populator import launch as taskfunel
 from db_func.database import create_table
 from loguru import logger
 from waitress import serve
@@ -38,5 +39,12 @@ def server_launch():
 
 
 if __name__ == '__main__':
-    create_table()
-    server_launch()
+    try:
+        create_table()
+        main_server = Process(target=server_launch).start()
+        background_process = Process(target=taskfunel).start()
+    except KeyboardInterrupt:
+        main_server.terminate()
+        background_process.terminate()
+        main_server.join()
+        background_process.join()
