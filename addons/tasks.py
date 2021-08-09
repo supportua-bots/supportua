@@ -67,7 +67,6 @@ def task_checker():
                                  'PHOTO_MODE': 'off',
                                  'DEAL': deal,
                                  'PHONE': phone}
-                tracking_data = json.dumps(tracking_data)
                 operator_connection(item[0], tracking_data)
             else:
                 update_task_counter(item[0], int(item[4]))
