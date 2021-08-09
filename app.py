@@ -11,6 +11,14 @@ from waitress import serve
 
 app = Flask(__name__)
 
+with app.app_context():
+    try:
+        create_table()
+        background_process = Process(target=taskfunel).start()
+    except KeyboardInterrupt:
+        background_process.terminate()
+        background_process.join()
+
 
 @app.route('/jivochatviber', methods=['GET', 'POST'])
 def jivochat_endpoint_viber():
@@ -41,10 +49,7 @@ def server_launch():
 if __name__ == '__main__':
     try:
         create_table()
-        main_server = Process(target=server_launch).start()
         background_process = Process(target=taskfunel).start()
     except KeyboardInterrupt:
-        main_server.terminate()
         background_process.terminate()
-        main_server.join()
         background_process.join()
