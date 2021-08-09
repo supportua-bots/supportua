@@ -67,6 +67,7 @@ def task_checker():
                                  'PHOTO_MODE': 'off',
                                  'DEAL': deal,
                                  'PHONE': phone}
+                delete_task(item[0])
                 operator_connection(item[0], tracking_data)
             else:
                 update_task_counter(item[0], int(item[4]))
