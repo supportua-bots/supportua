@@ -109,6 +109,14 @@ def get_all_tasks():
     return tasks
 
 
+@logger.catch
+def update_task_counter(chat_id, counter):
+    counter += 1
+    query = f"UPDATE TASKS SET counter = '{counter}' WHERE chat_id = '{chat_id}';"
+    tasks = post_sql_query(query)
+    return tasks
+
+
 # @logger.catch
 # def task_active(user_id):
 #     sql_selection = f"SELECT * FROM TASKS WHERE "\

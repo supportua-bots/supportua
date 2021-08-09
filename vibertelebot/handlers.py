@@ -26,7 +26,7 @@ from jivochat.utils import resources as jivosource
 from bitrix.crm_tools import (find_deal_by_contact, send_model_field, send_to_erp,
                               find_deal_by_title, upload_image, get_deal_by_id, get_link_by_id,
                               check_open_deals, get_deal_product, get_link_product)
-from db_func.database import check_phone, add_user
+from db_func.database import check_phone, add_user, add_task
 from textskeyboards import viberkeyboards as kb
 from scraper.headlines import get_product_title
 from loguru import logger
@@ -424,14 +424,17 @@ def user_message_handler(viber, viber_request):
                             deal = check_open_deals(tracking_data['DEALS'])
                             send_model_field(deal,
                                              parsing_result[0],
-                                             parsing_result[1])
+                                             parsing_result[1],
+                                             text)
                         except Exception as e:
                             logger.info(e)
                     if title:
                         reply_keyboard = kb.parsing_keyboard
-                        reply_text = title + resources.wait_for_operator
+                        reply_text = title + resources.key_wait
+                        add_task(chat_id,
+                                 tracking_data['DEALS'].split(',')[0],
+                                 tracking_data['PHONE'])
                         tracking_data['STAGE'] = 'menu'
-                        operator_connection(chat_id, tracking_data)
                     else:
                         reply_keyboard = kb.parsing_error_keyboard
                         reply_text = resources.rozetka_link_error

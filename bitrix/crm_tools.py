@@ -186,11 +186,34 @@ def get_link_product(id):
 
 
 @logger.catch
-def send_model_field(deal_id, item_name, category):
+def key_fields_check(id):
+    MAIN_URL = 'https://supportua.bitrix24.ua/rest/2067/1syhxe0qhy432py0/crm.deal.get.json?'
+    fields = {'id': id}
+    url = MAIN_URL + urlencode(fields, doseq=True)
+    x = requests.get(url)
+    result = []
+    if 'result' in x.json():
+        key1 = x.json()['result']['UF_CRM_1609749756869']
+        key2 = x.json()['result']['UF_CRM_1624356024571']
+        key3 = x.json()['result']['UF_CRM_1624356169034']
+        key4 = x.json()['result']['UF_CRM_1624356185921']
+        logger.info([key1, key2, key3, key4])
+        for item in [key1, key2, key3, key4]:
+            if item == '':
+                return []
+            else:
+                result.append(item)
+        return result
+    return result
+
+
+@logger.catch
+def send_model_field(deal_id, item_name, category, link):
     MAIN_URL = 'https://supportua.bitrix24.ua/rest/2067/zgbq9h1f38vnszm2/crm.deal.update.json?'
     fields = {'id': deal_id,
               'fields[UF_CRM_1623160178062]': item_name,
-              'fields[UF_CRM_1626684024072]': category}
+              'fields[UF_CRM_1626684024072]': category,
+              'fields[UF_CRM_1609944485620]': link}
     url = MAIN_URL + urlencode(fields, doseq=True)
     x = requests.get(url)
     logger.info(x.json())
@@ -254,9 +277,17 @@ def send_to_erp(tracking_data, chat_id):
     logger.info(x.text)
 
 
+def test():
+    deals = ['22551', '24893', '22739']
+    for deal in deals:
+        key_fields_check(deal)
+
+
 if __name__ == '__main__':
     deals = ['22551', '24893', '22739']
-    check_open_deals(deals)
+    for deal in deals:
+        key_fields_check(deal)
+    # check_open_deals(deals)
     # send_model_field('21085', 'Test name', 'Test category')
     # chat_id = '+XS2XxGhTunlRnOPpEl2NQ=='
     # tracking_data = {'PHONE': 1111111111}

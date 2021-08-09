@@ -3,7 +3,7 @@ from multiprocessing import Process
 # from telegrambot import main as tgbot
 from jivochat import main as jivo
 from vibertelebot import main as vbbot
-from populator import launch as taskfunel
+from addons.populator import launch as taskfunel
 from db_func.database import create_table
 from loguru import logger
 from waitress import serve

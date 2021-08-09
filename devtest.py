@@ -1,4 +1,4 @@
-from bitrix import crm_tools
+from bitrix.crm_tools import test
 
 # import http.client
 # conn = http.client.HTTPConnection("ifconfig.me")
@@ -6,6 +6,4 @@ from bitrix import crm_tools
 # print(conn.getresponse().read())
 
 if __name__ == '__main__':
-    deals = ['24975', '24963', '22813']
-    if crm_tools.check_open_deals(deals):
-        print('Luck')
+    test()
