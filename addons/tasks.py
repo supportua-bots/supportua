@@ -6,7 +6,7 @@ from vibertelebot.utils.tools import keyboard_consctructor
 from vibertelebot.main import viber
 from textskeyboards import viberkeyboards as kb
 from textskeyboards import texts as resources
-from vibertelebot.handler import operator_connection
+from vibertelebot.handlers import operator_connection
 from loguru import logger
 
 
