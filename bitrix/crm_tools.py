@@ -171,7 +171,8 @@ def get_open_products(deals):
         x = requests.get(url)
         if 'result' in x.json():
             item = x.json()['result']['UF_CRM_ROW_FIELD']
-            item = id + ' ' + item
+            title = x.json()['result']['TITLE']
+            name = f'{title} ({item[2:]})'
             result.append([item, id])
             logger.info(item)
     return result
