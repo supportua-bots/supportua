@@ -164,17 +164,20 @@ def check_open_deals(deals):
 @logger.catch
 def get_open_products(deals):
     MAIN_URL = 'https://supportua.bitrix24.ua/rest/2067/1syhxe0qhy432py0/crm.deal.get.json?'
+    DEAL_STATUSES = ['ON_HOLD', 'WON', 'LOSE']
     result = []
     for id in deals.split(','):
         fields = {'id': id}
         url = MAIN_URL + urlencode(fields, doseq=True)
         x = requests.get(url)
         if 'result' in x.json():
-            item = x.json()['result']['UF_CRM_ROW_FIELD']
-            title = x.json()['result']['TITLE']
-            name = f'{title} ({item[2:]})'
-            result.append([name, id])
-            logger.info(item)
+            stage = x.json()['result']['STAGE_ID']
+            if stage not in DEAL_STATUSES:
+                item = x.json()['result']['UF_CRM_ROW_FIELD']
+                title = x.json()['result']['TITLE']
+                name = f'{title} ({item[2:]})'
+                result.append([name, id])
+                logger.info(item)
     return result
 
 
