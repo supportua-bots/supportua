@@ -75,6 +75,41 @@ def deal_keyboard_consctructor(items: list) -> dict:
     return keyboard
 
 
+def product_keyboard_consctructor(items: list) -> dict:
+    """Pasting infromation from list of items to keyboard menu template."""
+    width = 6
+    keyboard = {
+        "DefaultHeight": False,
+        "BgColor": '#f7f9fc',
+        "Type": "keyboard",
+        "Buttons": [{
+                "Columns": width,
+                "Rows": 1,
+                "BgColor": MAIN_COLOR,
+                "BgLoop": True,
+                "ActionType": "reply",
+                "ActionBody": f'product-{item[1]}',
+                "ReplyType": "message",
+                "Text": item[0],
+                # "TextOpacity": 0,
+        } for item in items]
+    }
+    keyboard['Buttons'].append(
+        {
+                "Columns": 6,
+                "Rows": 1,
+                "BgColor": MAIN_COLOR,
+                "BgLoop": True,
+                "ActionType": "reply",
+                "ActionBody": 'phone_share',
+                "ReplyType": "message",
+                "Text": resources.menu_button,
+                # "TextOpacity": 0,
+        }
+    )
+    return keyboard
+
+
 def save_message_to_history(message, type, chat_id):
     text = ''
     now = datetime.now().strftime("%d.%m.%Y %H:%M")

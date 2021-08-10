@@ -13,6 +13,7 @@ from datetime import date, datetime, timedelta
 from textskeyboards import texts as resources
 from vibertelebot.utils.tools import (keyboard_consctructor,
                                       deal_keyboard_consctructor,
+                                      product_keyboard_consctructor,
                                       save_message_to_history,
                                       workdays, divide_chunks)
 from viberbot.api.messages.text_message import TextMessage
@@ -25,7 +26,8 @@ from jivochat import sender as jivochat
 from jivochat.utils import resources as jivosource
 from bitrix.crm_tools import (find_deal_by_contact, send_model_field, send_to_erp,
                               find_deal_by_title, upload_image, get_deal_by_id, get_link_by_id,
-                              check_open_deals, get_deal_product, get_link_product)
+                              check_open_deals, get_deal_product, get_link_product,
+                              get_open_products)
 from db_func.database import check_phone, add_user, add_task
 from textskeyboards import viberkeyboards as kb
 from scraper.headlines import get_product_title
@@ -316,9 +318,9 @@ def user_message_handler(viber, viber_request):
                 reply_keyboard = kb.operator_keyboard
                 reply_text = resources.rozetka_link
                 tracking_data['STAGE'] = 'rozetka'
-            elif text == 'register':
-                status = str(get_deal_by_id(
-                    check_open_deals(tracking_data['DEALS'])))
+            elif text[:7] == 'product':
+                deal_id = text.split('-')[1]
+                status = str(get_deal_by_id(deal_id))
                 logger.info(status)
                 if status == '209':
                     reply_keyboard = kb.operator_keyboard
@@ -330,6 +332,10 @@ def user_message_handler(viber, viber_request):
                     reply_keyboard = kb.end_chat_keyboard
                     reply_text = resources.payment_error
                     tracking_data['HISTORY'] = ''
+            elif text == 'register':
+                products = get_open_products(tracking_data['DEALS'])
+                reply_text = resources.choose_product_message
+                reply_keyboard = product_keyboard_consctructor(products)
             elif text == 'continue':
                 reply_keyboard = kb.operator_keyboard
                 reply_text = resources.name_message

@@ -162,6 +162,21 @@ def check_open_deals(deals):
 
 
 @logger.catch
+def get_open_products(deals):
+    MAIN_URL = 'https://supportua.bitrix24.ua/rest/2067/1syhxe0qhy432py0/crm.deal.get.json?'
+    result = []
+    for id in deals.split(','):
+        fields = {'id': id}
+        url = MAIN_URL + urlencode(fields, doseq=True)
+        x = requests.get(url)
+        if 'result' in x.json():
+            item = x.json()['result']['UF_CRM_ROW_FIELD']
+            result.append([item, id])
+            logger.info(item)
+    return result
+
+
+@logger.catch
 def get_deal_product(id):
     MAIN_URL = 'https://supportua.bitrix24.ua/rest/2067/1syhxe0qhy432py0/crm.deal.get.json?'
     fields = {'id': id}
