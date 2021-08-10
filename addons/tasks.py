@@ -42,7 +42,7 @@ def task_checker():
     tasks = get_all_tasks()
     logger.info(tasks)
     for item in tasks:
-        keys = key_fields_check(item[1])
+        keys = key_fields_check(item[2])
         logger.info(item)
         if keys:
             logger.info(keys)
