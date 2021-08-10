@@ -320,6 +320,7 @@ def user_message_handler(viber, viber_request):
                 tracking_data['STAGE'] = 'rozetka'
             elif text[:7] == 'product':
                 deal_id = text.split('-')[1]
+                tracking_data['DEAL'] = deal_id
                 status = str(get_deal_by_id(deal_id))
                 logger.info(status)
                 if status == '209':
@@ -427,8 +428,7 @@ def user_message_handler(viber, viber_request):
                         try:
                             parsing_result = get_product_title(text)
                             title = str(parsing_result[0]) + '\n'
-                            deal = check_open_deals(tracking_data['DEALS'])
-                            send_model_field(deal,
+                            send_model_field(tracking_data['DEAL'],
                                              parsing_result[0],
                                              parsing_result[1],
                                              text)
@@ -438,7 +438,7 @@ def user_message_handler(viber, viber_request):
                         reply_keyboard = kb.parsing_keyboard
                         reply_text = title + resources.key_wait
                         add_task(chat_id,
-                                 tracking_data['DEALS'].split(',')[0],
+                                 tracking_data['DEAL'],
                                  tracking_data['PHONE'])
                         tracking_data['STAGE'] = 'menu'
                     else:
