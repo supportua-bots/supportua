@@ -182,6 +182,19 @@ def get_open_products(deals):
 
 
 @logger.catch
+def get_product_info(deal):
+    MAIN_URL = 'https://supportua.bitrix24.ua/rest/2067/1syhxe0qhy432py0/crm.deal.get.json?'
+    fields = {'id': deal}
+    url = MAIN_URL + urlencode(fields, doseq=True)
+    x = requests.get(url)
+    if 'result' in x.json():
+        item = x.json()['result']['UF_CRM_ROW_FIELD']
+        logger.info(item)
+        return item[2:]
+    return None
+
+
+@logger.catch
 def get_deal_product(id):
     MAIN_URL = 'https://supportua.bitrix24.ua/rest/2067/1syhxe0qhy432py0/crm.deal.get.json?'
     fields = {'id': id}
@@ -206,7 +219,19 @@ def get_link_product(id):
 
 
 @logger.catch
-def key_fields_check(id):
+def get_contact_name(id):
+    MAIN_URL = 'https://supportua.bitrix24.ua/rest/2067/dubn2ikjcpwxsh79/crm.contact.get.json?'
+    fields = {'id': id}
+    url = MAIN_URL + urlencode(fields, doseq=True)
+    x = requests.get(url)
+    result = ''
+    if 'result' in x.json():
+        result = x.json()['result']['NAME']
+    return result
+
+
+@logger.catch
+def key_fields_check(id, products):
     MAIN_URL = 'https://supportua.bitrix24.ua/rest/2067/1syhxe0qhy432py0/crm.deal.get.json?'
     fields = {'id': id}
     url = MAIN_URL + urlencode(fields, doseq=True)
@@ -218,11 +243,9 @@ def key_fields_check(id):
         key3 = x.json()['result']['UF_CRM_1624356169034']
         key4 = x.json()['result']['UF_CRM_1624356185921']
         logger.info([key1, key2, key3, key4])
-        for item in [key1, key2, key3, key4]:
-            if item == '':
-                return []
-            else:
-                result.append(item)
+        for item in products:
+            defined_key = [key1, key2, key3, key4][products.index(item)]
+            result.append([defined_key, item])
         return result
     return result
 

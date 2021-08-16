@@ -337,6 +337,7 @@ def user_message_handler(viber, viber_request):
                 products = get_open_products(tracking_data['DEALS'])
                 reply_text = resources.choose_product_message
                 reply_keyboard = product_keyboard_consctructor(products)
+                tracking_data['PRODUCT'] = products
             elif text == 'continue':
                 reply_keyboard = kb.operator_keyboard
                 reply_text = resources.name_message
@@ -435,6 +436,9 @@ def user_message_handler(viber, viber_request):
                         except Exception as e:
                             logger.info(e)
                     if title:
+                        reply = [TextMessage(text=title)]
+                        viber.send_messages(chat_id, reply)
+                        time.sleep(1)
                         reply_keyboard = kb.parsing_keyboard
                         reply_text = title + resources.key_wait
                         add_task(chat_id,
