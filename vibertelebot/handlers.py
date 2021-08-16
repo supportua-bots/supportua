@@ -440,7 +440,7 @@ def user_message_handler(viber, viber_request):
                         viber.send_messages(chat_id, reply)
                         time.sleep(1)
                         reply_keyboard = kb.parsing_keyboard
-                        reply_text = title + resources.key_wait
+                        reply_text = resources.key_wait
                         add_task(chat_id,
                                  tracking_data['DEAL'],
                                  tracking_data['PHONE'])
