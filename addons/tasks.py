@@ -48,9 +48,9 @@ def task_checker():
         splitted_products = product.split(';')
         keys = key_fields_check(item[2], splitted_products)
         text = ''
-        for item in keys:
-            counter = keys.index(item) + 1
-            text += f'{counter}. Сервіс {item[1]}, ваш електронний ключ:\n{item[0]}\n'
+        for word in keys:
+            counter = keys.index(word) + 1
+            text += f'{counter}. Сервіс {word[1]}, ваш електронний ключ:\n{word[0]}\n'
         logger.info(text)
         if keys:
             logger.info(keys)
