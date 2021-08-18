@@ -429,12 +429,12 @@ def user_message_handler(viber, viber_request):
                         try:
                             parsing_result = get_product_title(text)
                             title = str(parsing_result[0]) + '\n'
+                            send_model_field(tracking_data['DEAL'],
+                                             parsing_result[0],
+                                             parsing_result[1],
+                                             text)
                         except Exception as e:
                             logger.info(e)
-                    send_model_field(tracking_data['DEAL'],
-                                     parsing_result[0],
-                                     parsing_result[1],
-                                     text)
                     if title:
                         reply = [TextMessage(text=title)]
                         viber.send_messages(chat_id, reply)

@@ -31,12 +31,12 @@ def create_table():
     query = '''CREATE TABLE IF NOT EXISTS DATA
                         (user_id TEXT,
                         phone TEXT,
-                        chat_id TEXT UNIQUE,
+                        chat_id TEXT,
                         deal TEXT,
                         name TEXT);'''
     post_sql_query(query)
     query = '''CREATE TABLE IF NOT EXISTS TASKS
-                        (chat_id TEXT UNIQUE,
+                        (chat_id TEXT,
                         user_id TEXT,
                         deal_id TEXT,
                         phone TEXT,
