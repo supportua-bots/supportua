@@ -56,7 +56,7 @@ def deals_grabber(phone, chat_id, tracking_data, viber):
         logger.info(f'Deals: {deals}')
         if len(deals) == 0:
             reply_keyboard = addkb.SHARE_PHONE_KEYBOARD
-            reply_text = resources. deal_error
+            reply_text = resources.deal_error
             tracking_data['STAGE'] = 'phone'
             logger.info(tracking_data)
         elif len(deals) > 1:
@@ -85,7 +85,7 @@ def deals_grabber(phone, chat_id, tracking_data, viber):
             tracking_data['DEALS'] = deals[0]
     else:
         reply_keyboard = addkb.SHARE_PHONE_KEYBOARD
-        reply_text = resources.phone_error
+        reply_text = resources.deal_error
         tracking_data['STAGE'] = 'phone'
         logger.info(tracking_data)
     tracking_data = json.dumps(tracking_data)
