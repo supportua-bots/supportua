@@ -12,9 +12,10 @@ def launch():
     while 1:
         try:
             contacts = find_contact_by_phone()
-            new_users = input_new_users(contacts)
-            logger.info(f'{len(new_users)} new contacts added.')
-            logger.info(new_users)
+            if contacts is not None:
+                new_users = input_new_users(contacts)
+                logger.info(f'{len(new_users)} new contacts added.')
+                logger.info(new_users)
         except Exception as e:
             logger.warning(e)
         finally:
