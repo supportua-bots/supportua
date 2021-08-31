@@ -9,6 +9,7 @@ import asyncio
 from pathlib import Path
 from dotenv import load_dotenv
 from loguru import logger
+from multiprocessing import Process
 from datetime import date, datetime, timedelta
 from textskeyboards import texts as resources
 from vibertelebot.utils.tools import (keyboard_consctructor,
@@ -27,7 +28,7 @@ from jivochat.utils import resources as jivosource
 from bitrix.crm_tools import (find_deal_by_contact, send_model_field, send_to_erp,
                               find_deal_by_title, upload_image, get_deal_by_id, get_link_by_id,
                               check_open_deals, get_deal_product, get_link_product,
-                              get_open_products)
+                              get_open_products, get_product_data)
 from db_func.database import check_phone, add_user, add_task
 from textskeyboards import viberkeyboards as kb
 from scraper.headlines import get_product_title
@@ -45,6 +46,15 @@ logger.add(
     rotation="100 MB",
     compression="zip",
 )
+
+
+@logger.catch
+def get_info_from_page(deal, text):
+    parsing_result = get_product_data(text)
+    send_model_field(tracking_data['DEAL'],
+                     parsing_result[0],
+                     parsing_result[1],
+                     text)
 
 
 @logger.catch
@@ -130,6 +140,7 @@ def operator_connection(chat_id, tracking_data):
 @logger.catch
 def user_message_handler(viber, viber_request):
     """Receiving a message from user and sending replies."""
+    background_process = None
     logger.info(viber_request)
     message = viber_request.message
     tracking_data = message.tracking_data
@@ -425,29 +436,23 @@ def user_message_handler(viber, viber_request):
                 #     reply_keyboard = kb.operator_keyboard
                 #     reply_text = resources.not_photo_error_message
                 elif tracking_data['STAGE'] == 'rozetka':
-                    reply = [TextMessage(
-                        text='Відбувається пошук товару, будь-ласка зачекайте.')]
-                    viber.send_messages(chat_id, reply)
-                    title = ''
                     if 'rozetka.com.ua' in text:
                         try:
-                            parsing_result = get_product_title(text)
-                            title = str(parsing_result[0]) + '\n'
-                            send_model_field(tracking_data['DEAL'],
-                                             parsing_result[0],
-                                             parsing_result[1],
-                                             text)
+                            title = get_product_title(text)
                         except Exception as e:
                             logger.info(e)
                     if title:
-                        # reply = [TextMessage(text=title)]
-                        # viber.send_messages(chat_id, reply)
+                        reply = [TextMessage(text=title)]
+                        viber.send_messages(chat_id, reply)
+                        time.sleep(0.5)
                         reply_keyboard = kb.parsing_keyboard
-                        reply_text = f'{title}\n\n{resources.key_wait}'
+                        reply_text = resources.key_wait
                         add_task(chat_id,
                                  tracking_data['DEAL'],
                                  tracking_data['PHONE'])
                         tracking_data['STAGE'] = 'menu'
+                        background_process = Process(target=get_info_from_page, args=(
+                            tracking_data['DEAL'], text)).start()
                     else:
                         reply_keyboard = kb.parsing_error_keyboard
                         reply_text = resources.rozetka_link_error
@@ -466,3 +471,5 @@ def user_message_handler(viber, viber_request):
                                  tracking_data=tracking_data,
                                  min_api_version=6)]
             viber.send_messages(chat_id, reply)
+            if background_process:
+                background_process.join()

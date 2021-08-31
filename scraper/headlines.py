@@ -6,6 +6,13 @@ def get_product_title(url):
     response = requests.get(url)
     soup = BeautifulSoup(response.content, "html.parser")
     title = soup.find('h1', class_='product__title').get_text()
+    return title
+
+
+def get_product_data(url):
+    response = requests.get(url)
+    soup = BeautifulSoup(response.content, "html.parser")
+    title = soup.find('h1', class_='product__title').get_text()
     # pps = soup.find_all('div', class_='product-about__right')
     # for p in pps:
     #     print(p)
