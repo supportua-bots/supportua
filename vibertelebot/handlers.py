@@ -437,10 +437,10 @@ def user_message_handler(viber, viber_request):
                         except Exception as e:
                             logger.info(e)
                     if title:
-                        reply = [TextMessage(text=title)]
-                        viber.send_messages(chat_id, reply)
+                        # reply = [TextMessage(text=title)]
+                        # viber.send_messages(chat_id, reply)
                         reply_keyboard = kb.parsing_keyboard
-                        reply_text = resources.key_wait
+                        reply_text = f'{title}\n\n{resources.key_wait}'
                         add_task(chat_id,
                                  tracking_data['DEAL'],
                                  tracking_data['PHONE'])
