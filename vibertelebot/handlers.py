@@ -425,6 +425,8 @@ def user_message_handler(viber, viber_request):
                 #     reply_keyboard = kb.operator_keyboard
                 #     reply_text = resources.not_photo_error_message
                 elif tracking_data['STAGE'] == 'rozetka':
+                    reply = [TextMessage(text='Відбувається пошук товару, будь-ласка зачекайте.')]
+                    viber.send_messages(chat_id, reply)
                     title = ''
                     if 'rozetka.com.ua' in text:
                         try:
