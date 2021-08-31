@@ -439,7 +439,6 @@ def user_message_handler(viber, viber_request):
                     if title:
                         reply = [TextMessage(text=title)]
                         viber.send_messages(chat_id, reply)
-                        time.sleep(1)
                         reply_keyboard = kb.parsing_keyboard
                         reply_text = resources.key_wait
                         add_task(chat_id,

@@ -49,11 +49,16 @@ def task_checker():
         keys = key_fields_check(item[2], splitted_products)
         text = ''
         logger.info(f'Keys: {keys}')
+        added_keys = False
         for word in keys:
             counter = keys.index(word) + 1
             logger.info(f'Counter: {counter}')
             text += f'{counter}. Сервіс {word[1]}, ваш електронний ключ:\n{word[0]}\n'
-        if keys:
+            if word[0]:
+                added_keys = True
+            else:
+                added_keys = False
+        if added_keys:
             send_message_to_user(item[0], text)
             delete_task(item[0])
         else:
