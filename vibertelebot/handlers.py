@@ -51,7 +51,7 @@ logger.add(
 @logger.catch
 def get_info_from_page(deal, text):
     parsing_result = get_product_data(text)
-    send_model_field(tracking_data['DEAL'],
+    send_model_field(deal,
                      parsing_result[0],
                      parsing_result[1],
                      text)
