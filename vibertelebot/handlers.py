@@ -28,10 +28,10 @@ from jivochat.utils import resources as jivosource
 from bitrix.crm_tools import (find_deal_by_contact, send_model_field, send_to_erp,
                               find_deal_by_title, upload_image, get_deal_by_id, get_link_by_id,
                               check_open_deals, get_deal_product, get_link_product,
-                              get_open_products, get_product_data)
+                              get_open_products)
 from db_func.database import check_phone, add_user, add_task
 from textskeyboards import viberkeyboards as kb
-from scraper.headlines import get_product_title
+from scraper.headlines import get_product_title, get_product_data
 from loguru import logger
 
 
