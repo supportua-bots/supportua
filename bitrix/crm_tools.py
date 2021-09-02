@@ -267,10 +267,15 @@ def send_model_field(deal_id, item_name, category, link):
 
 
 @logger.catch
-def get_username(user_id):
-    MAIN_URL = f'https://supportua.bitrix24.ua/rest/2067/{bitrix_key}/crm.contact.get.json?'
-    fields = {'id': user_id}
+def get_username(deal_id):
+    MAIN_URL = f'https://supportua.bitrix24.ua/rest/2067/{bitrix_key}/crm.deal.get.json?'
+    SECONDARY_URL = f'https://supportua.bitrix24.ua/rest/2067/{bitrix_key}/crm.contact.get.json?'
+    fields = {'id': deal_id}
     url = MAIN_URL + urlencode(fields, doseq=True)
+    x = requests.get(url)
+    contact_id = x.json()['result']['CONTACT_ID']
+    fields = {'id': contact_id}
+    url = SECONDARY_URL + urlencode(fields, doseq=True)
     x = requests.get(url)
     result = 'Користувач'
     logger.info(x.json())
