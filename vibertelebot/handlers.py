@@ -437,11 +437,11 @@ def user_message_handler(viber, viber_request):
                 #     reply_keyboard = kb.operator_keyboard
                 #     reply_text = resources.not_photo_error_message
                 elif tracking_data['STAGE'] == 'rozetka':
+                    title = ''
                     if 'rozetka.com.ua' in text:
                         try:
                             title = get_product_title(text)
                         except Exception as e:
-                            title = None
                             logger.info(e)
                     if title:
                         reply = [TextMessage(text=title)]
