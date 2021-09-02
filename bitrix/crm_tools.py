@@ -276,11 +276,11 @@ def get_username(deal_id):
     contact_id = x.json()['result']['CONTACT_ID']
     fields = {'id': contact_id}
     url = SECONDARY_URL + urlencode(fields, doseq=True)
-    x = requests.get(url)
+    y = requests.get(url)
     result = 'Користувач'
-    logger.info(x.json())
+    logger.info(y.json())
     if 'result' in x.json():
-        result = x.json()['result']['NAME']
+        result = y.json()['result']['NAME']
     return result
 
 
