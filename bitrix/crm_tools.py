@@ -80,7 +80,7 @@ def find_deal_by_contact(id):
 
 @logger.catch
 def find_contact_by_phone():
-    MAIN_URL = f'https://supportua.bitrix24.ua/rest/2067/dubn2ikjcpwxsh79/crm.contact.list.json?'
+    MAIN_URL = f'https://supportua.bitrix24.ua/rest/2067/oi9a40yqkmph4mw2/crm.contact.list.json?'
     next = 0
     result = []
     while next != 123456789:
