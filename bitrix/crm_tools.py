@@ -176,7 +176,7 @@ def get_open_products(deals):
         if 'result' in x.json():
             stage = x.json()['result']['STAGE_ID']
             if stage not in DEAL_STATUSES:
-                item = x.json()['result']['UF_CRM_ROW_FIELD']
+                item = x.json()['result']['UF_CRM_ROW_FIELD'].replace('\n', '')
                 title = x.json()['result']['TITLE']
                 name = f'{title} ({item[2:]})'
                 result.append([name, id])
