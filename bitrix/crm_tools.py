@@ -192,6 +192,7 @@ def get_product_info(deal):
     x = requests.get(url)
     if 'result' in x.json():
         item = x.json()['result']['UF_CRM_ROW_FIELD']
+        item = item.replace('\n', '')
         logger.info(item)
         return item[2:]
     return None
