@@ -95,7 +95,7 @@ def check_user(chat_id):
 
 @logger.catch
 def add_task(chat_id, deal_id, phone, username, product):
-    logger.info(f'{chat_id}\n{deal_id}\n{phone}\n{username}\n{product})
+    logger.info(f'{chat_id}\n{deal_id}\n{phone}\n{username}\n{product}')
     sql_selection = f"SELECT * FROM TASKS WHERE "\
         f"chat_id = '{chat_id}';"
     rows = post_sql_query(sql_selection)
