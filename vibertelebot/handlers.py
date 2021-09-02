@@ -451,7 +451,7 @@ def user_message_handler(viber, viber_request):
                         reply_text = resources.key_wait
                         user_info = check_user(chat_id)
                         logger.info(user_info)
-                        username = get_username(user_info[0][0])
+                        username = get_username(user_info[0][3])
                         add_task(chat_id,
                                  tracking_data['DEAL'],
                                  tracking_data['PHONE'],
