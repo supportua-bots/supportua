@@ -44,6 +44,9 @@ def task_checker():
     for item in tasks:
         product = get_product_info(item[2])
         splitted_products = product.split(';')
+        for item in splitted_products:
+            if item == '':
+                splitted_products.pop(splitted_products.index(item))
         keys = key_fields_check(item[2], splitted_products)
         text = ''
         logger.info(f'Keys: {keys}')
