@@ -57,7 +57,7 @@ def task_checker():
             else:
                 added_keys = False
         if added_keys:
-            send_message_to_user(item[0], text, username, device)
+            send_message_to_user(item[0], text, item[5], item[6])
             delete_task(item[0])
         else:
             if int(item[4]) > 5:
