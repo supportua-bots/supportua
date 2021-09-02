@@ -15,11 +15,12 @@ dotenv_path = os.path.join(Path(__file__).parent.parent, 'config/.env')
 load_dotenv(dotenv_path)
 
 # OWNER_ID, SECTION_ID = range(2)
+bitrix_key = os.getenv('BITRIX_KEY')
 
 
 @logger.catch
 def add_to_crm(category, reason, phone, brand, serial, name, date, time):
-    MAIN_URL = 'https://supportua.bitrix24.ua/rest/2067/cml51zgfaxwxwa2x/crm.deal.add.json?'
+    MAIN_URL = f'https://supportua.bitrix24.ua/rest/2067/{bitrix_key}/crm.deal.add.json?'
     fields = {'fields[CATEGORY_ID]': 11,
               'fields[STAGE]': 'Нове звернення',
               'fields[UF_CRM_1620715237492]': category,
@@ -38,7 +39,7 @@ def add_to_crm(category, reason, phone, brand, serial, name, date, time):
 
 @logger.catch
 def add_comment(deal_id, comment):
-    MAIN_URL = 'https://supportua.bitrix24.ua/rest/2067/96pk71aujg4fj1r7/crm.timeline.comment.add.json?'
+    MAIN_URL = f'https://supportua.bitrix24.ua/rest/2067/{bitrix_key}/crm.timeline.comment.add.json?'
     fields = {'fields[ENTITY_ID]': deal_id,
               'fields[ENTITY_TYPE]': 'deal',
               'fields[COMMENT]': comment}
@@ -64,7 +65,7 @@ def upload_image(path):
 @logger.catch
 def find_deal_by_contact(id):
     if id is not None:
-        MAIN_URL = 'https://supportua.bitrix24.ua/rest/2067/4g3l60we6z7cltoj/crm.deal.list.json?'
+        MAIN_URL = f'https://supportua.bitrix24.ua/rest/2067/{bitrix_key}/crm.deal.list.json?'
         fields = {'filter[CATEGORY_ID]': 0,
                   'filter[CONTACT_ID]': id}
         url = MAIN_URL + urlencode(fields, doseq=True)
@@ -80,7 +81,7 @@ def find_deal_by_contact(id):
 
 @logger.catch
 def find_contact_by_phone():
-    MAIN_URL = f'https://supportua.bitrix24.ua/rest/2067/oi9a40yqkmph4mw2/crm.contact.list.json?'
+    MAIN_URL = f'https://supportua.bitrix24.ua/rest/2067/{bitrix_key}/crm.contact.list.json?'
     next = 0
     result = []
     while next != 123456789:
@@ -108,7 +109,7 @@ def find_contact_by_phone():
 
 @logger.catch
 def find_deal_by_title(title):
-    MAIN_URL = 'https://supportua.bitrix24.ua/rest/2067/4g3l60we6z7cltoj/crm.deal.list.json?'
+    MAIN_URL = f'https://supportua.bitrix24.ua/rest/2067/{bitrix_key}/crm.deal.list.json?'
     fields = {'filter[CATEGORY_ID]': 0,
               'filter[TITLE]': title}
     url = MAIN_URL + urlencode(fields, doseq=True)
@@ -124,7 +125,7 @@ def find_deal_by_title(title):
 
 @logger.catch
 def get_deal_by_id(id):
-    MAIN_URL = 'https://supportua.bitrix24.ua/rest/2067/1syhxe0qhy432py0/crm.deal.get.json?'
+    MAIN_URL = f'https://supportua.bitrix24.ua/rest/2067/{bitrix_key}/crm.deal.get.json?'
     fields = {'id': id}
     url = MAIN_URL + urlencode(fields, doseq=True)
     x = requests.get(url)
@@ -136,7 +137,7 @@ def get_deal_by_id(id):
 
 @logger.catch
 def get_link_by_id(id):
-    MAIN_URL = 'https://supportua.bitrix24.ua/rest/2067/1syhxe0qhy432py0/crm.deal.get.json?'
+    MAIN_URL = f'https://supportua.bitrix24.ua/rest/2067/{bitrix_key}/crm.deal.get.json?'
     fields = {'id': id}
     url = MAIN_URL + urlencode(fields, doseq=True)
     x = requests.get(url)
@@ -148,7 +149,7 @@ def get_link_by_id(id):
 
 @logger.catch
 def check_open_deals(deals):
-    MAIN_URL = 'https://supportua.bitrix24.ua/rest/2067/1syhxe0qhy432py0/crm.deal.get.json?'
+    MAIN_URL = f'https://supportua.bitrix24.ua/rest/2067/{bitrix_key}/crm.deal.get.json?'
     DEAL_STATUSES = ['ON_HOLD', 'WON', 'LOSE']
     for id in deals.split(','):
         fields = {'id': id}
@@ -165,7 +166,7 @@ def check_open_deals(deals):
 
 @logger.catch
 def get_open_products(deals):
-    MAIN_URL = 'https://supportua.bitrix24.ua/rest/2067/1syhxe0qhy432py0/crm.deal.get.json?'
+    MAIN_URL = f'https://supportua.bitrix24.ua/rest/2067/{bitrix_key}/crm.deal.get.json?'
     DEAL_STATUSES = ['ON_HOLD', 'WON', 'LOSE']
     result = []
     for id in deals.split(','):
@@ -185,7 +186,7 @@ def get_open_products(deals):
 
 @logger.catch
 def get_product_info(deal):
-    MAIN_URL = 'https://supportua.bitrix24.ua/rest/2067/1syhxe0qhy432py0/crm.deal.get.json?'
+    MAIN_URL = f'https://supportua.bitrix24.ua/rest/2067/{bitrix_key}/crm.deal.get.json?'
     fields = {'id': deal}
     url = MAIN_URL + urlencode(fields, doseq=True)
     x = requests.get(url)
@@ -198,7 +199,7 @@ def get_product_info(deal):
 
 @logger.catch
 def get_deal_product(id):
-    MAIN_URL = 'https://supportua.bitrix24.ua/rest/2067/1syhxe0qhy432py0/crm.deal.get.json?'
+    MAIN_URL = f'https://supportua.bitrix24.ua/rest/2067/{bitrix_key}/crm.deal.get.json?'
     fields = {'id': id}
     url = MAIN_URL + urlencode(fields, doseq=True)
     x = requests.get(url)
@@ -210,7 +211,7 @@ def get_deal_product(id):
 
 @logger.catch
 def get_link_product(id):
-    MAIN_URL = 'https://supportua.bitrix24.ua/rest/2067/1syhxe0qhy432py0/crm.deal.get.json?'
+    MAIN_URL = f'https://supportua.bitrix24.ua/rest/2067/{bitrix_key}/crm.deal.get.json?'
     fields = {'id': id}
     url = MAIN_URL + urlencode(fields, doseq=True)
     x = requests.get(url)
@@ -222,7 +223,7 @@ def get_link_product(id):
 
 @logger.catch
 def get_contact_name(id):
-    MAIN_URL = 'https://supportua.bitrix24.ua/rest/2067/dubn2ikjcpwxsh79/crm.contact.get.json?'
+    MAIN_URL = f'https://supportua.bitrix24.ua/rest/2067/{bitrix_key}/crm.contact.get.json?'
     fields = {'id': id}
     url = MAIN_URL + urlencode(fields, doseq=True)
     x = requests.get(url)
@@ -234,7 +235,7 @@ def get_contact_name(id):
 
 @logger.catch
 def key_fields_check(id, products):
-    MAIN_URL = 'https://supportua.bitrix24.ua/rest/2067/1syhxe0qhy432py0/crm.deal.get.json?'
+    MAIN_URL = f'https://supportua.bitrix24.ua/rest/2067/{bitrix_key}/crm.deal.get.json?'
     fields = {'id': id}
     url = MAIN_URL + urlencode(fields, doseq=True)
     x = requests.get(url)
@@ -254,7 +255,7 @@ def key_fields_check(id, products):
 
 @logger.catch
 def send_model_field(deal_id, item_name, category, link):
-    MAIN_URL = 'https://supportua.bitrix24.ua/rest/2067/zgbq9h1f38vnszm2/crm.deal.update.json?'
+    MAIN_URL = f'https://supportua.bitrix24.ua/rest/2067/{bitrix_key}/crm.deal.update.json?'
     fields = {'id': deal_id,
               'fields[UF_CRM_1623160178062]': item_name,
               'fields[UF_CRM_1626684024072]': category,
@@ -266,7 +267,7 @@ def send_model_field(deal_id, item_name, category, link):
 
 @logger.catch
 def get_username(user_id):
-    MAIN_URL = 'https://supportua.bitrix24.ua/rest/2067/s1p04o2au8oz8buf/crm.contact.get.json?'
+    MAIN_URL = f'https://supportua.bitrix24.ua/rest/2067/{bitrix_key}/crm.contact.get.json?'
     fields = {'id': user_id}
     url = MAIN_URL + urlencode(fields, doseq=True)
     x = requests.get(url)
