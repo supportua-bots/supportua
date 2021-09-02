@@ -272,6 +272,7 @@ def get_username(user_id):
     url = MAIN_URL + urlencode(fields, doseq=True)
     x = requests.get(url)
     result = 'Користувач'
+    logger.info(x.json())
     if 'result' in x.json():
         result = x.json()['result']['NAME']
     return result
