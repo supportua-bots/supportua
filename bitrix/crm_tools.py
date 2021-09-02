@@ -93,8 +93,8 @@ def find_contact_by_phone():
             next = int(x.json()['next'])
         else:
             next = 123456789
-        logger.info(x.json())
-        logger.info(x.text)
+        # logger.info(x.json())
+        # logger.info(x.text)
         if 'result' in x.json():
             for item in x.json()['result']:
                 if 'PHONE' in item:

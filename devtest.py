@@ -1,4 +1,4 @@
-from bitrix.crm_tools import get_contact_name
+from bitrix.crm_tools import find_contact_by_phone
 
 # import http.client
 # conn = http.client.HTTPConnection("ifconfig.me")
@@ -6,4 +6,4 @@ from bitrix.crm_tools import get_contact_name
 # print(conn.getresponse().read())
 
 if __name__ == '__main__':
-    print(get_contact_name('539'))
+    find_contact_by_phone()
