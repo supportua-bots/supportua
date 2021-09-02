@@ -28,8 +28,8 @@ from jivochat.utils import resources as jivosource
 from bitrix.crm_tools import (find_deal_by_contact, send_model_field, send_to_erp,
                               find_deal_by_title, upload_image, get_deal_by_id, get_link_by_id,
                               check_open_deals, get_deal_product, get_link_product,
-                              get_open_products)
-from db_func.database import check_phone, add_user, add_task
+                              get_open_products, get_username)
+from db_func.database import check_phone, add_user, add_task, check_user
 from textskeyboards import viberkeyboards as kb
 from scraper.headlines import get_product_title, get_product_data
 from loguru import logger
@@ -271,6 +271,7 @@ def user_message_handler(viber, viber_request):
                 except:
                     pass
             elif text == 'phone_share':
+                tracking_data['PHONE'] = ''
                 reply_keyboard = addkb.SHARE_PHONE_KEYBOARD
                 reply_text = resources.greeting_message
                 tracking_data['STAGE'] = 'phone'
@@ -440,6 +441,7 @@ def user_message_handler(viber, viber_request):
                         try:
                             title = get_product_title(text)
                         except Exception as e:
+                            title = None
                             logger.info(e)
                     if title:
                         reply = [TextMessage(text=title)]
@@ -447,9 +449,13 @@ def user_message_handler(viber, viber_request):
                         time.sleep(0.5)
                         reply_keyboard = kb.parsing_keyboard
                         reply_text = resources.key_wait
+                        user_info = check_user(chat_id)
+                        username = get_username(user_info[0][0])
                         add_task(chat_id,
                                  tracking_data['DEAL'],
-                                 tracking_data['PHONE'])
+                                 tracking_data['PHONE'],
+                                 username,
+                                 title)
                         tracking_data['STAGE'] = 'menu'
                         background_process = Process(target=get_info_from_page, args=(
                             tracking_data['DEAL'], text)).start()

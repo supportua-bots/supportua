@@ -10,21 +10,19 @@ from vibertelebot.handlers import operator_connection
 from loguru import logger
 
 
-def send_message_to_user(user, keys):
+def send_message_to_user(user, keys, username, device):
     user_info = check_user(user)
     logger.info(user_info)
     if user_info:
-        username = get_contact_name(user_info[0][0])
         phone = user_info[0][1]
         deal = user_info[0][3]
     else:
-        username = 'Користувач'
         phone = ''
         deal = ''
     logger.info(user)
     product = get_deal_product(deal)
     text = resources.found_key.replace('[name]', username).replace(
-        '[products]', keys).replace('[device]', product)
+        '[products]', keys).replace('[device]', device)
     logger.info(text)
     tracking_data = {'NAME': username,
                      'HISTORY': '',
@@ -59,7 +57,7 @@ def task_checker():
             else:
                 added_keys = False
         if added_keys:
-            send_message_to_user(item[0], text)
+            send_message_to_user(item[0], text, username, device)
             delete_task(item[0])
         else:
             if int(item[4]) > 5:

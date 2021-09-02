@@ -40,7 +40,9 @@ def create_table():
                         user_id TEXT,
                         deal_id TEXT,
                         phone TEXT,
-                        checks TEXT);'''
+                        checks TEXT,
+                        username TEXT,
+                        product TEXT);'''
     post_sql_query(query)
 
 
@@ -92,13 +94,14 @@ def check_user(chat_id):
 
 
 @logger.catch
-def add_task(chat_id, deal_id, phone):
+def add_task(chat_id, deal_id, phone, username, product):
+    logger.info(f'{chat_id}\n{deal_id}\n{phone}\n{username}\n{product})
     sql_selection = f"SELECT * FROM TASKS WHERE "\
-                        f"chat_id = '{chat_id}';"
+        f"chat_id = '{chat_id}';"
     rows = post_sql_query(sql_selection)
     if not rows:
-        query = f"INSERT INTO TASKS (chat_id, deal_id, phone, checks) VALUES ('{chat_id}', "\
-                f"'{deal_id}', '{phone}', '0');"
+        query = f"INSERT INTO TASKS (chat_id, deal_id, phone, checks, username, product) VALUES ('{chat_id}', "\
+                f"'{deal_id}', '{phone}', '0', '{username}', '{product}');"
         post_sql_query(query)
 
 

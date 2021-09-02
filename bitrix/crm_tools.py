@@ -263,6 +263,18 @@ def send_model_field(deal_id, item_name, category, link):
 
 
 @logger.catch
+def get_username(user_id):
+    MAIN_URL = 'https://supportua.bitrix24.ua/rest/2067/s1p04o2au8oz8buf/crm.contact.get.json?'
+    fields = {'id': user_id}
+    url = MAIN_URL + urlencode(fields, doseq=True)
+    x = requests.get(url)
+    result = 'Користувач'
+    if 'result' in x.json():
+        result = x.json()['result']['NAME']
+    return result
+
+
+@logger.catch
 def send_to_erp(tracking_data, chat_id):
     MAIN_URL = 'https://demoerp.support.ua/api/v1/appeal/manage'
     header = {
