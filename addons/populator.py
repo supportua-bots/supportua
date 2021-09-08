@@ -13,7 +13,7 @@ def launch():
         try:
             contacts = find_contact_by_phone()
             if contacts is not None:
-                logger.info(contacts)
+                # logger.info(contacts)
                 new_users = input_new_users(contacts)
                 logger.info(f'{len(new_users)} new contacts added.')
                 logger.info(new_users)
