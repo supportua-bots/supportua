@@ -16,7 +16,7 @@ def keyboard_consctructor(items: list) -> dict:
     if len(items) > 12:
         width = 1
     elif len(items) == 3:
-        width = 6
+        width = 2
     elif len(items) > 1:
         width = 3
     else:
@@ -37,6 +37,17 @@ def keyboard_consctructor(items: list) -> dict:
                 # "TextOpacity": 0,
         } for item in items]
     }
+    keyboard['Buttons'].append({
+            "Columns": width,
+            "Rows": 1,
+            "BgColor": MAIN_COLOR,
+            "BgLoop": True,
+            "ActionType": "reply",
+            "ActionBody": 'phone_share',
+            "ReplyType": "message",
+            "Text": 'Меню',
+            # "TextOpacity": 0,
+    })
     return keyboard
 
 
