@@ -23,7 +23,7 @@ def keyboard_consctructor(items: list) -> dict:
         width = 6
     keyboard = {
         "DefaultHeight": False,
-        "BgColor": '#f7f9fc',
+        "BgColor": '#cdcfd1',
         "Type": "keyboard",
         "Buttons": [{
                 "Columns": width,

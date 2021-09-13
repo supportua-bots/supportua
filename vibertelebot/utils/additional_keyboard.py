@@ -12,7 +12,7 @@ MAIN_COLOR = os.getenv("COLOR")
 
 SHARE_PHONE_KEYBOARD = {
     "DefaultHeight": False,
-    "BgColor": '#f7f9fc',
+    "BgColor": '#cdcfd1',
     "Type": "keyboard",
     "Buttons": [
         {
