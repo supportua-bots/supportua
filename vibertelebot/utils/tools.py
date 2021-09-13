@@ -38,7 +38,7 @@ def keyboard_consctructor(items: list) -> dict:
         } for item in items]
     }
     keyboard['Buttons'].append({
-            "Columns": width,
+            "Columns": 6,
             "Rows": 1,
             "BgColor": MAIN_COLOR,
             "BgLoop": True,
