@@ -162,14 +162,9 @@ def user_message_handler(viber, viber_request):
         # Handling reply after user shared his contact infromation
         if message.contact.name:
             tracking_data['NAME'] = message.contact.name
-        if 'PHONE' in tracking_data:
-            reply_keyboard = kb.operator_keyboard
-            reply_text = resources.specify_deal_id
-            tracking_data['STAGE'] = 'deal'
-        else:
-            tracking_data['PHONE'] = message.contact.phone_number
-            deals_grabber(message.contact.phone_number,
-                          chat_id, tracking_data, viber)
+        tracking_data['PHONE'] = message.contact.phone_number
+        deals_grabber(message.contact.phone_number,
+                      chat_id, tracking_data, viber)
     elif isinstance(message, VideoMessage):
         jivochat.send_video(chat_id, tracking_data['NAME'],
                             viber_request.message.media,
@@ -232,6 +227,8 @@ def user_message_handler(viber, viber_request):
             #     tracking_data['STAGE'] = 'condition'
             #     tracking_data['PHOTO_MODE'] = 'off'
             else:
+                reply_keyboard = kb.operator_keyboard
+                reply_text = 'Виникла помилка.'
                 tracking_data['STAGE'] = ''
             save_message_to_history(reply_text, 'bot', chat_id)
             logger.info(tracking_data)
