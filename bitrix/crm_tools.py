@@ -280,7 +280,7 @@ def get_username(deal_id):
     result = 'Користувач'
     logger.info(y.json())
     if 'result' in x.json():
-        result = y.json()['result']['NAME']
+        result = y.json()['result']['NAME'] + y.json()['result']['LAST_NAME']
     return result
 
 
