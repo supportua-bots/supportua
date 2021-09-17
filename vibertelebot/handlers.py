@@ -151,7 +151,10 @@ def user_message_handler(viber, viber_request):
     # Data for RichMediaMessage
     reply_alt_text = ''
     reply_rich_media = {}
-    tracking_data = json.loads(tracking_data)
+    if tracking_data is not None:
+        tracking_data = json.loads(tracking_data)
+    else:
+        tracking_data = {}
     data_keys = {'NAME': 'ViberUser', 'HISTORY': '', 'CHAT_MODE': 'off',
                  'STAGE': 'menu', 'PHOTO_MODE': 'off', 'DEALS': ''}
     for k in data_keys:
