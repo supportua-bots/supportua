@@ -458,8 +458,11 @@ def user_message_handler(viber, viber_request):
                                  username,
                                  title)
                         tracking_data['STAGE'] = 'menu'
-                        background_process = Process(target=get_info_from_page, args=(
-                            tracking_data['DEAL'], text)).start()
+                        try:
+                            background_process = Process(target=get_info_from_page, args=(
+                                tracking_data['DEAL'], text)).start()
+                        except:
+                            pass
                     else:
                         reply_keyboard = kb.parsing_error_keyboard
                         reply_text = resources.rozetka_link_error
