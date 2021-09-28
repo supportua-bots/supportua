@@ -6,6 +6,7 @@ import time
 import requests
 import vibertelebot.utils.additional_keyboard as addkb
 import asyncio
+import threading
 from pathlib import Path
 from dotenv import load_dotenv
 from loguru import logger
@@ -462,7 +463,9 @@ def user_message_handler(viber, viber_request):
                             background_process = Process(target=get_info_from_page, args=(
                                 tracking_data['DEAL'], text)).start()
                         except:
-                            pass
+                            download_thread = threading.Thread(target=get_info_from_page, args=(
+                                tracking_data['DEAL'], text))
+                            download_thread.start()
                     else:
                         reply_keyboard = kb.parsing_error_keyboard
                         reply_text = resources.rozetka_link_error
