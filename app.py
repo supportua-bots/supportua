@@ -30,7 +30,7 @@ def error_handler(func):
                 return func(*args, **kwargs)
             except Exception:
                 subprocess.call(
-                    ["expect", "/var/www/chatbots2021/candy-bot/restart"])
+                    ["bash", "/var/www/chatboto/supportua/restart"])
     return wrapper
 
 
