@@ -32,7 +32,7 @@ from bitrix.crm_tools import (find_deal_by_contact, send_model_field, send_to_er
                               get_open_products, get_username)
 from db_func.database import check_phone, add_user, add_task, check_user
 from textskeyboards import viberkeyboards as kb
-from scraper.headlines import get_product_title, get_product_data
+from scraper.headlines import get_product_title, get_product_data, get_product_page
 from loguru import logger
 
 
@@ -315,16 +315,15 @@ def user_message_handler(viber, viber_request):
                         else:
                             valid_link = product_link.split(',')[0]
                             logger.info(f"Valid: {valid_link}")
-                            if 'rozetka.com.ua' in valid_link:
-                                try:
-                                    parsing_result = get_product_title(
-                                        valid_link)
-                                    logger.info(
-                                        f"Parsing: {str(parsing_result)}")
-                                    item = str(parsing_result[0])
-                                except Exception as e:
-                                    item = 'Нет информации о товаре'
-                                    logger.info(e)
+                            try:
+                                parsing_result = get_product_page(
+                                    valid_link)
+                                logger.info(
+                                    f"Parsing: {str(parsing_result)}")
+                                item = str(parsing_result[0])
+                            except Exception as e:
+                                item = 'Нет информации о товаре'
+                                logger.info(e)
                     keyboard.append([item, deal])
                 reply_text = resources.choose_product_message
                 reply_keyboard = deal_keyboard_consctructor(keyboard)
@@ -439,11 +438,10 @@ def user_message_handler(viber, viber_request):
                 #     reply_text = resources.not_photo_error_message
                 elif tracking_data['STAGE'] == 'rozetka':
                     title = ''
-                    if 'rozetka.com.ua' in text:
-                        try:
-                            title = get_product_title(text)
-                        except Exception as e:
-                            logger.info(e)
+                    try:
+                        title = get_product_page(text)
+                    except Exception as e:
+                        logger.info(e)
                     if title:
                         reply = [TextMessage(text=title)]
                         viber.send_messages(chat_id, reply)

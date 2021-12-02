@@ -1,5 +1,32 @@
+import os
 import requests
+import time
 from bs4 import BeautifulSoup
+from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.common.keys import Keys
+from webdriver_manager.chrome import ChromeDriverManager
+
+
+DRIVER_PATH = os.path.join(os.path.dirname(__file__), 'chromedriver')
+
+SEARCH_XPATH = '/html/body/app-root/div/div/rz-header/header/div/div/div/form/div/div/input'
+SEARCH_BUTTON = '/html/body/app-root/div/div/rz-header/header/div/div/div/form/button'
+
+
+def get_product_page(code):
+    options = webdriver.ChromeOptions()
+    options.add_argument('headless')
+    options.add_argument('--no-sandbox')
+    driver = webdriver.Chrome(executable_path=DRIVER_PATH, options=options)
+    # driver=webdriver.Chrome(executable_path='/usr/local/bin/chromedriver',options=options)
+    driver.get('https://rozetka.com.ua/')
+    driver.find_element_by_xpath(SEARCH_XPATH).send_keys(code)
+    time.sleep(0.5)
+    driver.find_element_by_xpath(SEARCH_BUTTON).click()
+    get_url = driver.current_url
+    title = get_product_title(get_url)
+    return title
 
 
 def get_product_title(url):
@@ -33,5 +60,4 @@ def get_product_data(url):
 
 
 if __name__ == "__main__":
-    link = 'https://rozetka.com.ua/273120533/p273120533/'
-    print(get_product_title(link))
+    get_product_page(273120533)
