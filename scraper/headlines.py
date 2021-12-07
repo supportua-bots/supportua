@@ -5,6 +5,7 @@ from bs4 import BeautifulSoup
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.common.by import By
 from webdriver_manager.chrome import ChromeDriverManager
 
 
@@ -22,9 +23,9 @@ def get_product_page(code):
     driver = webdriver.Chrome(options=options)
     # driver=webdriver.Chrome(executable_path='/usr/local/bin/chromedriver',options=options)
     driver.get('https://rozetka.com.ua/')
-    driver.find_element_by_xpath(SEARCH_XPATH).send_keys(code)
+    driver.find_element(By.XPATH, SEARCH_XPATH).send_keys(code)
     time.sleep(0.5)
-    driver.find_element_by_xpath(SEARCH_BUTTON).click()
+    driver.find_element(By.XPATH, SEARCH_BUTTON).click()
     get_url = driver.current_url
     title = get_product_title(get_url)
     return title
