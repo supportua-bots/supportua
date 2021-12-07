@@ -62,4 +62,4 @@ def get_product_data(url):
 
 
 if __name__ == "__main__":
-    get_product_page(273120533)
+    print(get_product_page(273120533))
