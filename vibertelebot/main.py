@@ -32,6 +32,7 @@ viber = Api(BotConfiguration(
 @logger.catch
 def main(request):
     viber_request = viber.parse_request(request.get_data())
+    logger.info(viber_request)
     # Defining type of the request and replying to it
     if isinstance(viber_request, ViberMessageRequest):
         user_message_handler(viber, viber_request)
