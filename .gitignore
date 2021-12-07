@@ -11,5 +11,4 @@ db.sqlite3
 logs/
 *.DS_Store
 *.jpg
-*.txt
 *.db
