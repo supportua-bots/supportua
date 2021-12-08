@@ -59,14 +59,16 @@ def viber_endpoint():
 
 @error_handler
 def server_launch():
-    app.run(host='0.0.0.0')
-    serve(app, host='0.0.0.0', port=5000)
+    app.run(host='0.0.0.0', port=5000)
 
 
 if __name__ == '__main__':
     try:
         create_table()
         background_process = Process(target=taskfunel).start()
+        flask_server = Process(target=server_launch).start()
     except KeyboardInterrupt:
+        flask_server.terminate()
         background_process.terminate()
+        flask_server.join()
         background_process.join()
