@@ -32,4 +32,6 @@ body = dict(url=URL + '/viber',
 # Sending POST request to apply a webhook, and printing results
 r = requests.post(hook, json.dumps(body), headers=headers)
 print(r.json())
+print(r.text)
 logger.info(r.json())
+logger.info(r.text)
