@@ -316,7 +316,7 @@ def user_message_handler(viber, viber_request):
                             valid_link = product_link.split(',')[0]
                             logger.info(f"Valid: {valid_link}")
                             try:
-                                parsing_result = get_product_page(
+                                parsing_result = get_product_title(
                                     valid_link)
                                 logger.info(
                                     f"Parsing: {str(parsing_result)}")
@@ -439,7 +439,7 @@ def user_message_handler(viber, viber_request):
                 elif tracking_data['STAGE'] == 'rozetka':
                     title = ''
                     try:
-                        title = get_product_page(text)
+                        title = get_product_title(text)
                     except Exception as e:
                         logger.info(e)
                     if title:

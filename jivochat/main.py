@@ -91,6 +91,9 @@ def main(data, source):
                                                       keyboard=reply_keyboard,
                                                       tracking_data=tracking_data,
                                                       media=link)])
+        if data['message']['type'] == 'typeout' or data['message']['type'] == 'typein':
+            returned_data = {'result': 'ok'}
+            return returned_data
     else:
         user_id = str(re.findall(f'\[(.*?)\]', data['visitor']['name'])[0])
         user_info = check_user(user_id)

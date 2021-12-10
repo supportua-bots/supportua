@@ -2,6 +2,7 @@ import functools
 import subprocess
 from flask import Flask, request, Response, json, jsonify
 from multiprocessing import Process
+from threading import Thread
 # from telegrambot import main as tgbot
 from jivochat import main as jivo
 from vibertelebot import main as vbbot
@@ -39,7 +40,8 @@ def jivochat_endpoint_viber():
     source = 'viber'
     data = request.get_json()
     logger.info(data)
-    returned_data = jivo.main(data, source)
+    Thread(target=jivo.main, args=(data, source)).start()
+    returned_data = {'result': 'ok'}
     response = app.response_class(
         response=json.dumps(returned_data),
         status=200,
