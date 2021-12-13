@@ -142,6 +142,7 @@ def operator_connection(chat_id, tracking_data):
 def user_message_handler(viber, viber_request):
     """Receiving a message from user and sending replies."""
     background_process = None
+    picture_message = False
     logger.info(viber_request)
     message = viber_request.message
     tracking_data = message.tracking_data
@@ -340,6 +341,7 @@ def user_message_handler(viber, viber_request):
                     reply_keyboard = kb.operator_keyboard
                     reply_text = resources.rozetka_link
                     tracking_data['STAGE'] = 'rozetka'
+                    picture_message = True
                 else:
                     tracking_data['CHAT_MODE'] = 'on'
                     operator_connection(chat_id, tracking_data)
@@ -482,5 +484,10 @@ def user_message_handler(viber, viber_request):
                                  tracking_data=tracking_data,
                                  min_api_version=6)]
             viber.send_messages(chat_id, reply)
+            if picture_message:
+                viber.send_messages(chat_id, [PictureMessage(text='',
+                                                             keyboard=reply_keyboard,
+                                                             tracking_data=tracking_data,
+                                                             media='https://i.ibb.co/WpMGPfZ/guide.png')])
             if background_process:
                 background_process.join()
