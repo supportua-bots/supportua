@@ -441,7 +441,7 @@ def user_message_handler(viber, viber_request):
                 elif tracking_data['STAGE'] == 'rozetka':
                     title = ''
                     try:
-                        title = get_product_page(text)
+                        title = get_product_page(text)[0]
                     except Exception as e:
                         logger.info(e)
                     if title:
