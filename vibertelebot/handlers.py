@@ -50,12 +50,43 @@ logger.add(
 
 
 @logger.catch
-def get_info_from_page(deal, parsing_result):
+def get_info_from_page(deal, text, chat_id, tracking_data, viber):
+    title = ''
+    try:
+        title = get_product_page(text)
+    except Exception as e:
+        logger.info(e)
+    if title:
+        reply = [TextMessage(text=title[0])]
+        viber.send_messages(chat_id, reply)
+        time.sleep(0.5)
+        reply_keyboard = kb.parsing_keyboard
+        reply_text = resources.key_wait
+        user_info = check_user(chat_id)
+        logger.info(user_info)
+        username = get_username(user_info[0][3])
+        add_task(chat_id,
+                 tracking_data['DEAL'],
+                 tracking_data['PHONE'],
+                 username,
+                 title[0])
+        tracking_data['STAGE'] = 'menu'
+    else:
+        reply_keyboard = kb.parsing_error_keyboard
+        reply_text = resources.rozetka_link_error
     send_model_field(deal,
-                     parsing_result[0],
-                     parsing_result[1],
-                     parsing_result[2],
-                     parsing_result[3])
+                     title[0],
+                     title[1],
+                     title[2],
+                     title[3])
+    save_message_to_history(reply_text, 'bot', chat_id)
+    logger.info(tracking_data)
+    tracking_data = json.dumps(tracking_data)
+    reply = [TextMessage(text=reply_text,
+                         keyboard=reply_keyboard,
+                         tracking_data=tracking_data,
+                         min_api_version=6)]
+    viber.send_messages(chat_id, reply)
 
 
 @logger.catch
@@ -439,36 +470,15 @@ def user_message_handler(viber, viber_request):
                 #     reply_keyboard = kb.operator_keyboard
                 #     reply_text = resources.not_photo_error_message
                 elif tracking_data['STAGE'] == 'rozetka':
-                    title = ''
                     try:
-                        title = get_product_page(text)
-                    except Exception as e:
-                        logger.info(e)
-                    if title:
-                        reply = [TextMessage(text=title[0])]
-                        viber.send_messages(chat_id, reply)
-                        time.sleep(0.5)
-                        reply_keyboard = kb.parsing_keyboard
-                        reply_text = resources.key_wait
-                        user_info = check_user(chat_id)
-                        logger.info(user_info)
-                        username = get_username(user_info[0][3])
-                        add_task(chat_id,
-                                 tracking_data['DEAL'],
-                                 tracking_data['PHONE'],
-                                 username,
-                                 title[0])
-                        tracking_data['STAGE'] = 'menu'
-                        try:
-                            background_process = Process(target=get_info_from_page, args=(
-                                tracking_data['DEAL'], title)).start()
-                        except:
-                            download_thread = threading.Thread(target=get_info_from_page, args=(
-                                tracking_data['DEAL'], title))
-                            download_thread.start()
-                    else:
-                        reply_keyboard = kb.parsing_error_keyboard
-                        reply_text = resources.rozetka_link_error
+                        background_process = Process(target=get_info_from_page, args=(
+                            tracking_data['DEAL'], text, chat_id, tracking_data, viber)).start()
+                    except:
+                        download_thread = threading.Thread(target=get_info_from_page, args=(
+                            tracking_data['DEAL'], text, chat_id, tracking_data, viber))
+                        download_thread.start()
+                    reply_keyboard = kb.operator_keyboard
+                    reply_text = resources.please_wait_rozetka
                 else:
                     if check_open_deals(tracking_data['DEALS']):
                         reply_keyboard = kb.menu_keyboard
