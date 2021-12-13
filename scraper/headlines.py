@@ -34,11 +34,11 @@ def get_product_page(code):
     return title
 
 
-# def get_product_title(url):
-#     response = requests.get(url)
-#     soup = BeautifulSoup(response.content, "html.parser")
-#     title = soup.find('h1', class_='product__title').get_text()
-#     return title
+def get_product_title(url):
+    response = requests.get(url)
+    soup = BeautifulSoup(response.content, "html.parser")
+    title = soup.find('h1', class_='product__title').get_text()
+    return title
 
 
 def get_product_data(url):
