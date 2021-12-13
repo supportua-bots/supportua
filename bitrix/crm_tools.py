@@ -129,10 +129,23 @@ def get_deal_by_id(id):
     fields = {'id': id}
     url = MAIN_URL + urlencode(fields, doseq=True)
     x = requests.get(url)
-    result = ''
+    # print(x.json())
     if 'result' in x.json():
-        result = x.json()['result']['UF_CRM_MPI__PAYMENT_STATE']
-    return result
+        # result = x.json()['result']['UF_CRM_MPI__PAYMENT_STATE']
+        rozetka_payment = x.json()['result']['UF_CRM_1625577766232']
+        evopay_payment = x.json()['result']['UF_CRM_1625575668560']
+        generation_payment = x.json()['result']['UF_CRM_1632743846']
+        liqpay_payment = x.json()['result']['UF_CRM_1608105758266']
+        # print(f'{rozetka_payment}\n'
+        #       f'{evopay_payment}\n'
+        #       f'{generation_payment}\n'
+        #       f'{liqpay_payment}')
+        if (rozetka_payment is not None
+            or evopay_payment is not None
+            or generation_payment is not None
+                or liqpay_payment is not None):
+            return True
+    return False
 
 
 @logger.catch
@@ -167,6 +180,7 @@ def check_open_deals(deals):
 @logger.catch
 def get_open_products(deals):
     MAIN_URL = f'https://supportua.bitrix24.ua/rest/2067/{bitrix_key}/crm.deal.get.json?'
+    PRODUCT_URL = f'https://supportua.bitrix24.ua/rest/2067/{bitrix_key}/crm.deal.productrows.get.json?'
     DEAL_STATUSES = ['ON_HOLD', 'WON', 'LOSE']
     result = []
     for id in deals.split(','):
@@ -176,11 +190,15 @@ def get_open_products(deals):
         if 'result' in x.json():
             stage = x.json()['result']['STAGE_ID']
             if stage not in DEAL_STATUSES:
-                item = x.json()['result']['UF_CRM_ROW_FIELD'].replace('\n', '')
-                title = x.json()['result']['TITLE']
-                name = f'{title} ({item[2:]})'
-                result.append([name, id])
-                logger.info(item)
+                fields = {'id': id}
+                url = PRODUCT_URL + urlencode(fields, doseq=True)
+                x = requests.get(url)
+                # print(x.json())
+                # item = x.json()['result']['UF_CRM_ROW_FIELD'].replace('\n', '')
+                title = x.json()['result'][0]['PRODUCT_NAME']
+                # name = f'{title} ({item[2:]})'
+                result.append([title, id])
+                logger.info(title)
     return result
 
 
@@ -280,7 +298,8 @@ def get_username(deal_id):
     result = 'Користувач'
     logger.info(y.json())
     if 'result' in x.json():
-        result = y.json()['result']['NAME'] + ' ' + y.json()['result']['LAST_NAME']
+        result = y.json()['result']['NAME'] + ' ' + \
+                        y.json()['result']['LAST_NAME']
     return result
 
 
@@ -349,9 +368,7 @@ def test():
 
 
 if __name__ == '__main__':
-    deals = ['22551', '24893', '22739']
-    for deal in deals:
-        key_fields_check(deal)
+    print(get_deal_by_id('31411'))
     # check_open_deals(deals)
     # send_model_field('21085', 'Test name', 'Test category')
     # chat_id = '+XS2XxGhTunlRnOPpEl2NQ=='

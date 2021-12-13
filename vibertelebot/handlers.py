@@ -334,9 +334,9 @@ def user_message_handler(viber, viber_request):
             elif text[:7] == 'product':
                 deal_id = text.split('-')[1]
                 tracking_data['DEAL'] = deal_id
-                status = str(get_deal_by_id(deal_id))
+                status = get_deal_by_id(deal_id)
                 logger.info(status)
-                if status == '209':
+                if status:
                     reply_keyboard = kb.operator_keyboard
                     reply_text = resources.rozetka_link
                     tracking_data['STAGE'] = 'rozetka'
