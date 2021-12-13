@@ -2,6 +2,7 @@ import os
 import requests
 import time
 from bs4 import BeautifulSoup
+from loguru import logger
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.keys import Keys
@@ -19,6 +20,7 @@ def get_product_page(code):
     options = webdriver.ChromeOptions()
     options.add_argument('headless')
     options.add_argument('--no-sandbox')
+    logger.info(f'Porduct code: {code}')
     # driver = webdriver.Chrome(executable_path=DRIVER_PATH, options=options)
     driver = webdriver.Chrome(options=options)
     driver.get('https://rozetka.com.ua/')
@@ -26,8 +28,9 @@ def get_product_page(code):
     time.sleep(2)
     driver.find_element(By.XPATH, SEARCH_BUTTON).click()
     get_url = driver.current_url
-    print(get_url)
+    logger.info(f'Page URL: {get_url}')
     title = get_product_title(get_url)
+    driver.quit()
     return title
 
 
