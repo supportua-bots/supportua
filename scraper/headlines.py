@@ -29,16 +29,16 @@ def get_product_page(code):
     driver.find_element(By.XPATH, SEARCH_BUTTON).click()
     get_url = driver.current_url
     logger.info(f'Page URL: {get_url}')
-    title = get_product_title(get_url)
+    title = get_product_data(get_url)
     driver.quit()
     return title
 
 
-def get_product_title(url):
-    response = requests.get(url)
-    soup = BeautifulSoup(response.content, "html.parser")
-    title = soup.find('h1', class_='product__title').get_text()
-    return title
+# def get_product_title(url):
+#     response = requests.get(url)
+#     soup = BeautifulSoup(response.content, "html.parser")
+#     title = soup.find('h1', class_='product__title').get_text()
+#     return title
 
 
 def get_product_data(url):
