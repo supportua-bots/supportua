@@ -301,32 +301,32 @@ def user_message_handler(viber, viber_request):
                 deal_id = text.split('-')[1]
                 product = get_deal_product(deal_id)
                 tracking_data['BRAND'] = product
-            elif text == 'repair':
-                keyboard = []
-                deals = tracking_data['DEALS'].split(',')
-                for deal in deals:
-                    item = get_deal_product(deal)
-                    logger.info(f"Title: {item}")
-                    if not item:
-                        product_link = get_link_product(deal)
-                        logger.info(f"Link: {product_link}")
-                        if not product_link:
-                            item = 'Нет информации о товаре.'
-                        else:
-                            valid_link = product_link.split(',')[0]
-                            logger.info(f"Valid: {valid_link}")
-                            try:
-                                parsing_result = get_product_title(
-                                    valid_link)
-                                logger.info(
-                                    f"Parsing: {str(parsing_result)}")
-                                item = str(parsing_result[0])
-                            except Exception as e:
-                                item = 'Нет информации о товаре'
-                                logger.info(e)
-                    keyboard.append([item, deal])
-                reply_text = resources.choose_product_message
-                reply_keyboard = deal_keyboard_consctructor(keyboard)
+            # elif text == 'repair':
+            #     keyboard = []
+            #     deals = tracking_data['DEALS'].split(',')
+            #     for deal in deals:
+            #         item = get_deal_product(deal)
+            #         logger.info(f"Title: {item}")
+            #         if not item:
+            #             product_link = get_link_product(deal)
+            #             logger.info(f"Link: {product_link}")
+            #             if not product_link:
+            #                 item = 'Нет информации о товаре.'
+            #             else:
+            #                 valid_link = product_link.split(',')[0]
+            #                 logger.info(f"Valid: {valid_link}")
+            #                 try:
+            #                     parsing_result = get_product_title(
+            #                         valid_link)
+            #                     logger.info(
+            #                         f"Parsing: {str(parsing_result)}")
+            #                     item = str(parsing_result[0])
+            #                 except Exception as e:
+            #                     item = 'Нет информации о товаре'
+            #                     logger.info(e)
+            #         keyboard.append([item, deal])
+            #     reply_text = resources.choose_product_message
+            #     reply_keyboard = deal_keyboard_consctructor(keyboard)
             elif text == 'rozetka':
                 reply_keyboard = kb.operator_keyboard
                 reply_text = resources.rozetka_link
@@ -439,7 +439,7 @@ def user_message_handler(viber, viber_request):
                 elif tracking_data['STAGE'] == 'rozetka':
                     title = ''
                     try:
-                        title = get_product_title(text)
+                        title = get_product_page(text)
                     except Exception as e:
                         logger.info(e)
                     if title:
