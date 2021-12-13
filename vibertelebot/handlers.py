@@ -479,19 +479,13 @@ def user_message_handler(viber, viber_request):
             save_message_to_history(reply_text, 'bot', chat_id)
             logger.info(tracking_data)
             tracking_data = json.dumps(tracking_data)
+            reply = [TextMessage(text=reply_text,
+                                 keyboard=reply_keyboard,
+                                 tracking_data=tracking_data,
+                                 min_api_version=6)]
+            viber.send_messages(chat_id, reply)
             if picture_message:
-                viber.send_messages(chat_id, [PictureMessage(text=reply_text,
-                                                             keyboard=reply_keyboard,
-                                                             tracking_data=tracking_data,
-                                                             media='https://i.ibb.co/WpMGPfZ/guide.png')])
-            else:
-                reply = [TextMessage(text=reply_text,
-                                     keyboard=reply_keyboard,
-                                     tracking_data=tracking_data,
-                                     min_api_version=6)]
-                viber.send_messages(chat_id, reply)
-            if picture_message:
-                viber.send_messages(chat_id, [PictureMessage(text=reply_text,
+                viber.send_messages(chat_id, [PictureMessage(text='',
                                                              keyboard=reply_keyboard,
                                                              tracking_data=tracking_data,
                                                              media='https://i.ibb.co/WpMGPfZ/guide.png')])
