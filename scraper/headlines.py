@@ -61,8 +61,13 @@ def get_product_data(url):
         result = item.find('span').get_text()
         category_path += result + ', '
     category_path = category_path[:-2]
-    return [title, category_path]
+    try:
+        price = soup.find('p', class_='product-prices__big').get_text()
+        price = price.replace('₴', '').replace('\xa0', '').replace(' ', '')
+    except:
+        price = '0'
+    return [title, category_path, price]
 
 
 if __name__ == "__main__":
-    print(get_product_page(273120533))
+    print(get_product_page(259926021))

@@ -273,11 +273,12 @@ def key_fields_check(id, products):
 
 
 @logger.catch
-def send_model_field(deal_id, item_name, category, link):
+def send_model_field(deal_id, item_name, category, price, link):
     MAIN_URL = f'https://supportua.bitrix24.ua/rest/2067/{bitrix_key}/crm.deal.update.json?'
     fields = {'id': deal_id,
               'fields[UF_CRM_1623160178062]': item_name,
               'fields[UF_CRM_1626684024072]': category,
+              'fields[UF_CRM_1623160196990]': price,
               'fields[UF_CRM_1609944485620]': link}
     url = MAIN_URL + urlencode(fields, doseq=True)
     x = requests.get(url)

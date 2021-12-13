@@ -12,3 +12,4 @@ logs/
 *.DS_Store
 *.jpg
 *.db
+chromedriver

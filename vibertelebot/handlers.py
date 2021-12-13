@@ -55,6 +55,7 @@ def get_info_from_page(deal, text):
     send_model_field(deal,
                      parsing_result[0],
                      parsing_result[1],
+                     parsing_result[2],
                      text)
 
 
