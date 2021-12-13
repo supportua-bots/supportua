@@ -457,7 +457,7 @@ def user_message_handler(viber, viber_request):
                                  tracking_data['DEAL'],
                                  tracking_data['PHONE'],
                                  username,
-                                 title)
+                                 title[0])
                         tracking_data['STAGE'] = 'menu'
                         try:
                             background_process = Process(target=get_info_from_page, args=(
