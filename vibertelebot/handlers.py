@@ -50,13 +50,12 @@ logger.add(
 
 
 @logger.catch
-def get_info_from_page(deal, text):
-    parsing_result = get_product_data(text)
+def get_info_from_page(deal, parsing_result):
     send_model_field(deal,
                      parsing_result[0],
                      parsing_result[1],
                      parsing_result[2],
-                     text)
+                     parsing_result[3])
 
 
 @logger.catch
@@ -442,11 +441,11 @@ def user_message_handler(viber, viber_request):
                 elif tracking_data['STAGE'] == 'rozetka':
                     title = ''
                     try:
-                        title = get_product_page(text)[0]
+                        title = get_product_page(text)
                     except Exception as e:
                         logger.info(e)
                     if title:
-                        reply = [TextMessage(text=title)]
+                        reply = [TextMessage(text=title[0])]
                         viber.send_messages(chat_id, reply)
                         time.sleep(0.5)
                         reply_keyboard = kb.parsing_keyboard
@@ -462,10 +461,10 @@ def user_message_handler(viber, viber_request):
                         tracking_data['STAGE'] = 'menu'
                         try:
                             background_process = Process(target=get_info_from_page, args=(
-                                tracking_data['DEAL'], text)).start()
+                                tracking_data['DEAL'], title)).start()
                         except:
                             download_thread = threading.Thread(target=get_info_from_page, args=(
-                                tracking_data['DEAL'], text))
+                                tracking_data['DEAL'], title))
                             download_thread.start()
                     else:
                         reply_keyboard = kb.parsing_error_keyboard

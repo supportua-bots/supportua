@@ -45,15 +45,6 @@ def get_product_data(url):
     response = requests.get(url)
     soup = BeautifulSoup(response.content, "html.parser")
     title = soup.find('h1', class_='product__title').get_text()
-    # pps = soup.find_all('div', class_='product-about__right')
-    # for p in pps:
-    #     print(p)
-
-    # print(price)
-    # try:
-    #     price = soup.find('p', class_='product-prices__big').get_text()
-    # except:
-    #     price = '0'
     category_path = ''
     categories = soup.find_all(
         'li', class_='breadcrumbs__item ng-star-inserted')
@@ -66,7 +57,7 @@ def get_product_data(url):
         price = price.replace('₴', '').replace('\xa0', '').replace(' ', '')
     except:
         price = '0'
-    return [title, category_path, price]
+    return [title, category_path, price, url]
 
 
 if __name__ == "__main__":
