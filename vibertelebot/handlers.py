@@ -498,6 +498,6 @@ def user_message_handler(viber, viber_request):
                 viber.send_messages(chat_id, [PictureMessage(text='',
                                                              keyboard=reply_keyboard,
                                                              tracking_data=tracking_data,
-                                                             media='https://i.ibb.co/WpMGPfZ/guide.png')])
+                                                             media='https://i.ibb.co/TWbf9WP/kod.png')])
             if background_process:
                 background_process.join()
