@@ -108,6 +108,19 @@ def find_contact_by_phone():
 
 
 @logger.catch
+def find_deal_by_phone_direct(phone):
+    MAIN_URL = f'https://supportua.bitrix24.ua/rest/2067/{bitrix_key}/crm.contact.list.json?'
+    fields = {'filter[UF_CRM_1626337817376]': phone}
+    url = MAIN_URL + urlencode(fields, doseq=True)
+    x = requests.get(url)
+    try:
+        id = x.json()['result'][0]['ID']
+    except:
+        id = None
+    return id
+
+
+@logger.catch
 def find_deal_by_title(title):
     MAIN_URL = f'https://supportua.bitrix24.ua/rest/2067/{bitrix_key}/crm.deal.list.json?'
     fields = {'filter[CATEGORY_ID]': 0,
@@ -369,7 +382,11 @@ def test():
 
 
 if __name__ == '__main__':
-    print(get_deal_by_id('31411'))
+    id = find_deal_by_phone_direct('0982031573')
+    print(id)
+    if id:
+        print(find_deal_by_contact(id))
+
     # check_open_deals(deals)
     # send_model_field('21085', 'Test name', 'Test category')
     # chat_id = '+XS2XxGhTunlRnOPpEl2NQ=='

@@ -29,7 +29,7 @@ from jivochat.utils import resources as jivosource
 from bitrix.crm_tools import (find_deal_by_contact, send_model_field, send_to_erp,
                               find_deal_by_title, upload_image, get_deal_by_id, get_link_by_id,
                               check_open_deals, get_deal_product, get_link_product,
-                              get_open_products, get_username)
+                              get_open_products, get_username, find_deal_by_phone_direct)
 from db_func.database import check_phone, add_user, add_task, check_user
 from textskeyboards import viberkeyboards as kb
 from scraper.headlines import get_product_title, get_product_data, get_product_page
@@ -91,10 +91,14 @@ def get_info_from_page(deal, text, chat_id, tracking_data, viber):
 
 @logger.catch
 def deals_grabber(phone, chat_id, tracking_data, viber):
-    contact_id = check_phone(phone)
-    if contact_id:
+    contact_info = check_phone(phone)
+    if not contact_info:
+        contact_id = find_deal_by_phone_direct(phone[2:])
+    else:
+        contact_id = contact_info[0][0]
+    if phone:
         logger.info(contact_id)
-        deals = find_deal_by_contact(contact_id[0][0])
+        deals = find_deal_by_contact(contact_id)
         logger.info(f'Deals: {deals}')
         if len(deals) == 0:
             reply_keyboard = addkb.SHARE_PHONE_KEYBOARD
@@ -201,6 +205,7 @@ def user_message_handler(viber, viber_request):
         tracking_data['PHONE'] = message.contact.phone_number
         deals_grabber(message.contact.phone_number,
                       chat_id, tracking_data, viber)
+        save_message_to_history(message.contact.phone_number, 'user', chat_id)
     elif isinstance(message, VideoMessage):
         jivochat.send_video(chat_id, tracking_data['NAME'],
                             viber_request.message.media,
@@ -489,15 +494,16 @@ def user_message_handler(viber, viber_request):
             save_message_to_history(reply_text, 'bot', chat_id)
             logger.info(tracking_data)
             tracking_data = json.dumps(tracking_data)
-            reply = [TextMessage(text=reply_text,
-                                 keyboard=reply_keyboard,
-                                 tracking_data=tracking_data,
-                                 min_api_version=6)]
-            viber.send_messages(chat_id, reply)
             if picture_message:
-                viber.send_messages(chat_id, [PictureMessage(text='',
+                viber.send_messages(chat_id, [PictureMessage(text=reply_text,
                                                              keyboard=reply_keyboard,
                                                              tracking_data=tracking_data,
                                                              media='https://i.ibb.co/TWbf9WP/kod.png')])
+            else:
+                reply = [TextMessage(text=reply_text,
+                                     keyboard=reply_keyboard,
+                                     tracking_data=tracking_data,
+                                     min_api_version=6)]
+                viber.send_messages(chat_id, reply)
             if background_process:
                 background_process.join()

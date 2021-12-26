@@ -1,4 +1,4 @@
-from bitrix.crm_tools import find_contact_by_phone, get_deal_by_id, get_open_products
+from bitrix.crm_tools import find_contact_by_phone, get_deal_by_id, get_open_products, find_deal_by_phone_direct, find_deal_by_contact
 
 # import http.client
 # conn = http.client.HTTPConnection("ifconfig.me")
@@ -6,5 +6,6 @@ from bitrix.crm_tools import find_contact_by_phone, get_deal_by_id, get_open_pro
 # print(conn.getresponse().read())
 
 if __name__ == '__main__':
-    # print(get_deal_by_id('31411'))
-    print(get_open_products('31411'))
+    id = find_deal_by_phone_direct('0982031573')
+    if id:
+        print(find_deal_by_contact(id))
