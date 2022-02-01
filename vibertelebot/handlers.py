@@ -314,10 +314,10 @@ def user_message_handler(viber, viber_request):
                 reply_text = resources.greeting_message
                 tracking_data['STAGE'] = 'phone'
             elif text == 'end_chat':
-                jivochat.send_message(chat_id,
-                                      tracking_data['NAME'],
-                                      jivosource.user_ended_chat,
-                                      'viber')
+                # jivochat.send_message(chat_id,
+                #                       tracking_data['NAME'],
+                #                       jivosource.user_ended_chat,
+                #                       'viber')
                 answer = [TextMessage(text=resources.chat_ending)]
                 viber.send_messages(chat_id, answer)
                 if check_open_deals(tracking_data['DEALS']):
