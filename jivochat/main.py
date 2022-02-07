@@ -105,8 +105,8 @@ def main(data, source):
             username = 'ViberUser'
             phone = ''
             deal = ''
-        text = data['message']['text']
-        logger.info(text)
+        # text = data['message']['text']
+        # logger.info(text)
         tracking_data = {'NAME': username,
                          'HISTORY': '',
                          'CHAT_MODE': 'on',
