@@ -20,6 +20,7 @@ from vibertelebot.utils.tools import keyboard_consctructor
 from vibertelebot.main import viber
 from flask import Flask, request, Response, json, jsonify
 from jivochat.utils import resources
+from textskeyboards import texts as viberresources
 from loguru import logger
 from db_func.database import check_user
 from textskeyboards import viberkeyboards as kb
@@ -126,7 +127,7 @@ def main(data, source):
                 viber.send_messages(user_id, [TextMessage(
                     text=resources.operator_ended_chat)])
                 time.sleep(1)
-                viber.send_messages(user_id, [TextMessage(text=resources.menu_message,
+                viber.send_messages(user_id, [TextMessage(text=viberresources.menu_message,
                                                           keyboard=kb.menu_keyboard,
                                                           tracking_data=tracking_data)])
     returned_data = {'result': 'ok'}
