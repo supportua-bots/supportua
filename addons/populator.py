@@ -21,7 +21,7 @@ def launch():
             logger.warning(e)
         finally:
             task_checker()
-            time.sleep(300)
+            time.sleep(120)
 
 
 if __name__ == '__main__':
