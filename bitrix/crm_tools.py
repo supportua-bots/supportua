@@ -115,6 +115,7 @@ def find_deal_by_phone_direct(phone):
     fields = {'filter[UF_CRM_1626337817376]': phone}
     url = MAIN_URL + urlencode(fields, doseq=True)
     x = requests.get(url)
+    logger.info(x.json())
     try:
         id = x.json()['result'][0]['ID']
     except:
@@ -386,10 +387,10 @@ def test():
 
 
 if __name__ == '__main__':
-    id = find_deal_by_phone_direct('0982031573')
+    id = find_deal_by_phone_direct('0938049900')
     print(id)
-    if id:
-        print(find_deal_by_contact(id))
+    deals = find_deal_by_contact(id)
+    print(deals)
 
     # check_open_deals(deals)
     # send_model_field('21085', 'Test name', 'Test category')
