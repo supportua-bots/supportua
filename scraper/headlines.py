@@ -28,7 +28,6 @@ def get_product_page(code):
     fileToWrite = open("page_source.html", "w")
     fileToWrite.write(pagesource)
     fileToWrite.close()
-    logger.info(pagesource)
     driver.find_element(By.XPATH, SEARCH_XPATH).send_keys(code)
     time.sleep(2)
     driver.find_element(By.XPATH, SEARCH_BUTTON).click()
@@ -66,4 +65,4 @@ def get_product_data(url):
 
 
 if __name__ == "__main__":
-    print(get_product_page(259926021))
+    print(get_product_page(334830985))
