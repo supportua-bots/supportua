@@ -12,7 +12,7 @@ from webdriver_manager.chrome import ChromeDriverManager
 
 DRIVER_PATH = os.path.join(os.path.dirname(__file__), 'chromedriver')
 
-SEARCH_XPATH = '/html/body/app-root/div/div/rz-header/rz-main-header/header/div/div/div/form/div/div[1]/input'
+SEARCH_XPATH = '/html/body/app-root/div/div/rz-header/rz-main-header/header/div/div/div/form/div/div/input'
 SEARCH_BUTTON = '/html/body/app-root/div/div/rz-header/rz-main-header/header/div/div/div/form/button'
 
 
