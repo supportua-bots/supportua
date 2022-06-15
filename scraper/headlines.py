@@ -24,6 +24,11 @@ def get_product_page(code):
     # driver = webdriver.Chrome(executable_path=DRIVER_PATH, options=options)
     driver = webdriver.Chrome(options=options)
     driver.get('https://rozetka.com.ua/')
+    pagesource = driver.page_source
+    fileToWrite = open("page_source.html", "w")
+    fileToWrite.write(pagesource)
+    fileToWrite.close()
+    logger.info(pagesource)
     driver.find_element(By.XPATH, SEARCH_XPATH).send_keys(code)
     time.sleep(2)
     driver.find_element(By.XPATH, SEARCH_BUTTON).click()
