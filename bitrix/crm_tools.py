@@ -105,7 +105,6 @@ def find_contact_by_phone():
                     if cleaned_phone[0] == '0':
                         cleaned_phone = '38' + cleaned_phone
                     result.append([cleaned_phone, item['ID']])
-    logger.info(result)
     return result
 
 
